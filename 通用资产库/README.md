@@ -14,6 +14,6 @@
 
 - `EP-REPUTATION-CORE v0.1`：born-compliant Reference Implementation；
 - `EP-ORG-CORE v0.1.2`：embedded retrofit reference；
-- `通用资产库_RuntimeContextContract模式_v0.2`：current pattern；
-- `通用资产库_RuntimeContextContract索引_v0.1`：每个资产唯一 Context Contract location；
-- Wave 1：Character / Relationship / Health / Combat / ORG 已 PASS；当前 NEXT = Survival / Traveler-System。
+- `通用资产库_RuntimeContextContract模式_v0.3`：current pattern；
+- `通用资产库_RuntimeContextContract索引_v0.2`：每个资产唯一 Context Contract location；
+- Wave 1 / Wave 2 已 PASS；Survival / Traveler-System 已拥有 Context Sidecar；当前 NEXT = Magic / Divine + Generic Identity Normalization。
