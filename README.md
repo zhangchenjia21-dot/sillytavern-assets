@@ -2,6 +2,12 @@
 
 个人使用的 SillyTavern 资产创作与维护仓库。
 
+## AI 入口
+
+任何 GPT、Codex、Grok 或其它 Agent 开始资产任务前，先读 [`AGENTS.md`](./AGENTS.md)，再读目标工作区最近的局部 `AGENTS.md`。
+
+正式资产正文只保留一份；完整正文留在仓库中，不重复复制进长 Agent Prompt。
+
 ## 仓库结构
 
 本仓库同时提供三种互补视图，但正式资产正文只保留一份。
@@ -48,4 +54,4 @@ Bundle
 = 某个资产族在某一版本锁下的交付物
 ```
 
-当前仍处于 Semantic Asset 阶段。正式机器 Manifest、Bundle Schema、Validator 与 Creator Binding 等待 G9 `tavern-asset-spec vNext` 冻结后再建立。
+当前仍处于 Semantic Asset 阶段。正式机器 Manifest、Bundle Schema、Validator 与 Creator Binding 等待项目 current source 对 G9 `tavern-asset-spec vNext` 正式授权后再建立。
