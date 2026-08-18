@@ -14,6 +14,8 @@
 
 - `EP-REPUTATION-CORE v0.1`：born-compliant Reference Implementation；
 - `EP-ORG-CORE v0.1.2`：embedded retrofit reference；
-- `通用资产库_RuntimeContextContract模式_v0.3`：current pattern；
-- `通用资产库_RuntimeContextContract索引_v0.2`：每个资产唯一 Context Contract location；
-- Wave 1 / Wave 2 已 PASS；Survival / Traveler-System 已拥有 Context Sidecar；当前 NEXT = Magic / Divine + Generic Identity Normalization。
+- `通用资产库_RuntimeContextContract模式_v0.4`：current pattern；
+- `通用资产库_RuntimeContextContract索引_v0.3`：每个资产唯一 Context Contract location；
+- Wave 1 / Wave 2 / Wave 3 已 PASS；Magic / Divine 已拥有 Context Sidecar 且 Generic Identity Normalization PASS；当前 NEXT = Combat Magic Wave 4 → Generic Library Context Convergence。
+
+Wave 3 新增：`Domain Active != Full Definition Registry Visible`；`Bounded != Starved`。

@@ -3,7 +3,7 @@ title: 通用资产库｜Shared Foundation 架构规划
 aliases:
   - 通用资产库上游核心规划
   - Generic Shared Foundation Plan
-version: 0.5
+version: 0.6
 status: current-planning-baseline
 created: 2026-08-17
 updated: 2026-08-18
@@ -13,19 +13,21 @@ scope:
   - canonical-ownership
   - migration-planning
   - runtime-context
-skill: tavern-asset v0.8.1
+skill: tavern-asset v0.8.2
 asset_spec_binding: pending-g9
 creator_binding: pending-g9
 supersedes:
-  - 通用资产库_Shared_Foundation架构规划_v0.4
+  - 通用资产库_Shared_Foundation架构规划_v0.5
 ---
 
-# 通用资产库｜Shared Foundation 架构规划 v0.5
+# 通用资产库｜Shared Foundation 架构规划 v0.6
 
 > [!abstract] 当前裁定
-> 社会结构 Shared Foundation 已完成前两项：`ORG v0.1.2 → Reputation v0.1`。
+> 社会结构 Shared Foundation 已完成前两项：
 >
-> 二者已经通过 Ownership + Runtime Context Cluster Audit，并冻结 `Runtime Context Contract Pattern v0.3`。
+> `ORG v0.1.2 → Reputation v0.1`
+>
+> 二者已经通过 Ownership + Runtime Context Cluster Audit，并冻结 `Runtime Context Contract Pattern v0.4`。
 >
 > **现在暂停继续生产 Kinship；先对既有 Runtime Expansion 做分波次 Context Retrofit。** Retrofit 收敛后再恢复 `Kinship → Politics → Economy → War`。
 
@@ -35,7 +37,7 @@ supersedes:
 
 ## EP-ORG-CORE｜组织与任职核心
 
-状态：AUDITED CURRENT v0.1.2。
+状态：**AUDITED CURRENT v0.1.2**。
 
 Owner：Organization / Membership / Formal Affiliation / Role / Rank / Branch / Internal Authority / generic organization relation lifecycle。
 
@@ -43,13 +45,15 @@ Context：retrofit reference / PASS。
 
 ## EP-REPUTATION-CORE｜名望与社会评价核心
 
-状态：AUDITED CURRENT v0.1。
+状态：**AUDITED CURRENT v0.1**。
 
 Owner：Target × Audience 公共社会评价、传播、显著性、争议、时效与 Social Epithet。
 
-Hard：无。Optional：ORG / Relationship / Character / future Politics / Law。
+Hard：无。
 
-Context：born-compliant Reference Implementation / PASS。
+Optional：ORG / Relationship / Character / future Politics / Law。
+
+Context：**born-compliant Reference Implementation / PASS**。
 
 关键边界：
 
@@ -64,7 +68,7 @@ Reputation != Character Capability
 
 ## EP-KINSHIP-CORE｜亲缘与谱系核心
 
-状态：PLANNED / PAUSED FOR CONTEXT RETROFIT。
+状态：**PLANNED / PAUSED FOR CONTEXT RETROFIT**。
 
 Owner：Biological / Adoptive / Genealogical Kinship、Lineage、Branch、Generation、Disputed Genealogy 与继承资格证据。
 
@@ -72,11 +76,19 @@ Owner：Biological / Adoptive / Genealogical Kinship、Lineage、Branch、Genera
 
 # 2. P0-B Large-scale Domain Core
 
-EP-POLITICS-CORE：PLANNED GENERICIZATION，Hard ORG。
+## EP-POLITICS-CORE
 
-EP-ECONOMY-CORE：PLANNED GENERICIZATION。
+状态：PLANNED GENERICIZATION。
+Hard：ORG。
 
-EP-WAR-CORE：PLANNED GENERICIZATION，Hard ORG。
+## EP-ECONOMY-CORE
+
+状态：PLANNED GENERICIZATION。
+
+## EP-WAR-CORE
+
+状态：PLANNED GENERICIZATION。
+Hard：ORG。
 
 Governance / Law 继续 DEFERRED P1。
 
@@ -114,26 +126,36 @@ Full Semantic Asset != Model Prompt Payload
 Dependency Graph != Context Inclusion Graph
 ```
 
-Pattern：`[[通用资产库_RuntimeContextContract模式_v0.3]]`；Contract location：`[[通用资产库_RuntimeContextContract索引_v0.2]]`。
+Pattern：`[[通用资产库_RuntimeContextContract模式_v0.4]]`；Contract location 见 `[[通用资产库_RuntimeContextContract索引_v0.3]]`。
 
 Model-first Router：Player Input + Enabled Routing Profiles + minimal active context → immediate Domain / Intent candidates；Program 只做 structural validation + state-mandatory augmentation；后续由 Event / Handoff 再激活。
-
-Wave 2 增量：
-
-```text
-Background deterministic progression != Model Activation
-Package Included != Feature Enabled != Module Enabled != Runtime Relevant != Model Visible
-```
 
 ---
 
 # 5. Reference Implementation / Cluster 结论
 
-Reputation 验证短 Routing Profile、immediate/downstream 分离、Target × Audience Minimal Read、Provenance summary 与 Knowledge boundary。
+`EP-REPUTATION-CORE v0.1` 验证：
 
-ORG + Reputation 验证 bounded projection、Handoff 替代 state mirroring、Role/Rank 与社会 Standing 无 duplicate owner。
+- Routing Profile 可非常短；
+- immediate routing 与 downstream activation 可分离；
+- Target × Audience 可形成局部 Minimal Read；
+- provenance 可以摘要，不需要完整事件历史；
+- Reputation truth / Character Knowledge 可隔离。
 
-Wave 1 / Wave 2 将这些证据收敛为 current Context Pattern v0.3。
+`ORG + Reputation` Cluster 验证：
+
+- 同时 Enabled 不要求同时 Prompted；
+- bounded projection 足以跨 Owner 协作；
+- Handoff 可以替代 pairwise state mirroring；
+- Role / Rank 与社会声望没有 duplicate owner。
+
+该证据已与 Wave 1 / Wave 2 / Wave 3 一起收敛为 current `Context Contract Pattern v0.4`。
+
+Wave 3 新增证明：
+- `Domain Active != Full Definition Registry Visible`；
+- 大型 Spell / Invocation Registry 应先裁剪到 actor-accessible / authorized / intent-relevant subset；
+- `Bounded != Starved`，Context 必须最小但足够；
+- durable/interactable Narrative affordance 必须存在 authoritative Runtime referent。
 
 ---
 
@@ -149,17 +171,18 @@ Survival → Traveler/System
 ✓ PASS / CLOSED
 
 Wave 3
-Magic → Divine
-NEXT
+Magic → Divine + Generic Identity Normalization
+✓ PASS / CLOSED
 
 Wave 4
 Combat Magic
+NEXT
 ↓ Generic Library Context Convergence
 ```
 
-Wave 1：Character / Relationship / Health / Combat 使用 Sidecar；ORG v0.1.2 embedded。
+Wave 1：Character / Relationship / Health / Combat 通过 Sidecar Retrofit；ORG v0.1.2 补齐 embedded Pattern。
 
-Wave 2：Survival / Traveler-System 使用 Sidecar；新增 Background Program Progression 与 Feature / Module Activation Hierarchy。
+Wave 2：Survival / Traveler-System 通过 Sidecar Retrofit；新增后台 Program progression 与 Feature / Module activation hierarchy。
 
 Sidecar 只拥有 Context Binding Metadata，不获得 Domain Ownership。
 
@@ -211,7 +234,14 @@ History Reference / Divergence 继续 Han-specific。
 
 # 10. Periodic Architecture Audit
 
-每形成高耦合 Cluster 检查：规模 5–10 倍、duplicate owner / state mirroring、pairwise / transitive context explosion、over-modularization、Prompt-owned deterministic mechanics、成本 / 延迟与后台 model-call explosion。
+每形成一个高耦合 Cluster，检查：
+
+- 规模 5–10 倍是否仍成立；
+- duplicate owner / state mirroring；
+- pairwise / transitive context explosion；
+- over-modularization / shotgun change；
+- Prompt-owned deterministic mechanics；
+- 成本 /延迟是否随无关资产数量或 Session 长度增长。
 
 必要时邀请用户做 Owner Reflection。
 
@@ -219,8 +249,8 @@ History Reference / Divergence 继续 Han-specific。
 
 # 11. G9 Boundary
 
-不冻结 JSON / Schema / Router API / token budget / retrieval algorithm / Creator machine fields / Bundle contract。
+不冻结：JSON / Schema / Router API / token budget / retrieval algorithm / Creator machine fields / Bundle contract。
 
-WEB-04 Final Host Convergence 已 PASS / CLOSED；G9 machine protocol 仍必须等待 G8 Exit。Semantic Retrofit 可继续，并为 G9-02 提供 handwritten runtime profile requirements，但不能反向定义 Host。
+Freshness Gate：G8 Engineering Gate 为 historical PASS，但 Stage UAT 已 FAIL 并正式 REOPEN G8；当前 Next = G8-UAT-01，G9 NOT AUTHORIZED。Semantic Retrofit 可继续，并为 G9-02 提供 handwritten runtime profile requirements，但不能反向定义 Host。
 
 当前冻结 Semantic Ownership、Context Contract Pattern 与生产 / Retrofit 顺序。
