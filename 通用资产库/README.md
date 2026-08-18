@@ -13,5 +13,7 @@
 当前 Context Reference：
 
 - `EP-REPUTATION-CORE v0.1`：born-compliant Reference Implementation；
-- `EP-ORG-CORE v0.1.1`：retrofit reference；
-- `通用资产库_RuntimeContextContract模式_v0.1`：旧 Expansion Context Retrofit 的 current pattern。
+- `EP-ORG-CORE v0.1.2`：embedded retrofit reference；
+- `通用资产库_RuntimeContextContract模式_v0.2`：current pattern；
+- `通用资产库_RuntimeContextContract索引_v0.1`：每个资产唯一 Context Contract location；
+- Wave 1：Character / Relationship / Health / Combat / ORG 已 PASS；当前 NEXT = Survival / Traveler-System。
