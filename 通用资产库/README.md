@@ -1,6 +1,6 @@
 # 通用资产库｜Generic Asset Library Workspace
 
-本目录管理跨 World Pack 可复用 Expansion 的库级蓝图、版本、Ownership、Dependency、Consumer 与维护规范。
+本目录管理跨 World Pack 可复用 Expansion 的库级蓝图、版本、Ownership、Dependency、Consumer、Runtime Context Contract、维护规范与审核资料。
 
 正式 Expansion 正文仍只保存在：
 
@@ -8,4 +8,10 @@
 
 本目录不是 Bundle，也不复制通用 Expansion 正文。
 
-当前现有可复用 Expansion：9 个；其中 6 个已作为稳定语义基线，3 个属于通用超自然生态候选。
+当前现有可复用 Expansion：**11 个**；其中 **8 个**为稳定语义基线，**3 个**属于通用超自然生态候选。
+
+当前 Context Reference：
+
+- `EP-REPUTATION-CORE v0.1`：born-compliant Reference Implementation；
+- `EP-ORG-CORE v0.1.1`：retrofit reference；
+- `通用资产库_RuntimeContextContract模式_v0.1`：旧 Expansion Context Retrofit 的 current pattern。
