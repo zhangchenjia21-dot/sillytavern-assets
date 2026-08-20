@@ -65,7 +65,7 @@ Derived Pairwise Projection != Canonical Truth
 
 迁移收口后：Economy → War → Shared Foundation Convergence。
 
-这条资产维护路线与游戏项目 G9-04 Adapter / Compiler Gate 并行但不可混淆：资产正文仍是 canonical semantic source，G9-04 负责 deterministic machine adapter，不允许借机反向重写资产语义 owner。
+这条资产维护路线与游戏项目 Creator 开发并行但不可混淆：资产正文仍是 canonical semantic source；Creator 必须消费已冻结的统一资产协议，不得反向改写资产语义 owner。
 
 ## Archive
 
@@ -78,32 +78,27 @@ Derived Pairwise Projection != Canonical Truth
 ```text
 G9-02                         PASS / CLOSED
 G9-03 Unified Protocol       PASS / CLOSED
-G9-04 Adapter / Compiler     AUTHORIZED / NEXT
-G9-05 Creator                BLOCKED BY G9-04
+G9-04 Adapter / Compiler     PASS / CLOSED
+G9-05 Creator                AUTHORIZED / NEXT
 ```
 
-G9-03 current protocol authority：
+G9-03 / G9-04 current authority：
 
 - `Vibe-Coding/main/sillytavern/G9-03_UnifiedAssetReferenceProtocol规格_v1.0_2026-08-20.md`
 - `Vibe-Coding/main/sillytavern/G9-03A_RuntimeModuleBinding与TypedConfig增量裁定_v1.0_2026-08-20.md`
 - `Vibe-Coding/main/sillytavern/G9-03_IndependentReview_最终收口_v1.0_2026-08-20.md`
+- `Vibe-Coding/main/sillytavern/G9-04_LegacyMarkdownAdapterCompilerBinding规格_v1.0_2026-08-20.md`
+- `Vibe-Coding/main/sillytavern/G9-04_IndependentReview_最终收口_v1.0_2026-08-20.md`
 
-G9-04 将从本仓库 current canonical samples 中读取真实：
+G9-04 已证明本仓库真实 World Pack / Character Card / Expansion Pack 可以通过确定性适配器转成 `TavernAssetV1`，再通过精确 Manifest 进入 G9-02 本局绑定与存档恢复轨道。
 
-- World Pack；
-- Character Card；
-- Expansion Pack；
-- Library 最小协议样本 / reference material；
+现有 Semantic Assets 不需要手工改写为 JSON；适配器/编译器承担 authoring format → canonical machine object 的转换。
 
-并通过 AI-independent adapter / parser 转成已冻结 `TavernAssetV1`，再证明 `TavernGameAssetManifestV1 → G9-02 Source Binding / Game-local lineage`。
+G9-05 Creator 必须让人工编辑与 AI 辅助编辑最终产生同一种合法 Source Asset，并继续禁止：
 
-现有 Semantic Assets 不需要因为 G9-03 PASS 而手工改写为 JSON；adapter/compiler 承担 authoring format → canonical machine object 的转换。
-
-继续禁止资产线自行提前实现：
-
-- Creator fields / chat transport；
 - Runtime Library retrieval；
 - arbitrary relation query DSL；
 - executable asset/plugin；
 - 第二套 Source / Game-local / Runtime identity；
-- 为适配器方便而私自发明 `tavern.asset.v1` 之外的 hidden machine truth。
+- 为 Creator 方便而私自发明 `tavern.asset.v1` 之外的第二资产协议；
+- AI 绕过用户显式 Save / Publish 直接发布资产。
