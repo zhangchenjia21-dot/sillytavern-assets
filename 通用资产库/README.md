@@ -69,6 +69,25 @@ Derived Pairwise Projection != Canonical Truth
 
 ## Game / G9
 
-当前项目：G9-02A PASS；G9-02BC PASS；G9-02B ACTIVE；G9-03 NOT AUTHORIZED。
+当前游戏项目权威状态以 `Vibe-Coding/main/sillytavern/` 为准；本段只做资产工作台导航同步。
 
-资产线继续语义 Shared Foundation 与真实消费者迁移；不提前冻结 final machine schema / Compiler / Creator fields / relation query DSL。
+```text
+G9-02                         PASS / CLOSED
+G9-03 Unified Protocol       SEMANTICS FROZEN / PASS
+G9-03 Implementation         ACTIVE / NEXT
+G9-04 Adapter / Compiler     BLOCKED BY G9-03
+```
+
+G9-03 current canonical spec：
+
+`Vibe-Coding/main/sillytavern/G9-03_UnifiedAssetReferenceProtocol规格_v1.0_2026-08-20.md`
+
+资产线现有 Semantic Assets 不需要因为协议冻结而立即重写正文。G9-04 才负责把 current Markdown Source 通过 adapter / parser 转成 `TavernAssetV1` 并证明真实 Game-local binding。
+
+继续禁止资产线自行提前实现：
+
+- Creator fields / chat transport；
+- Runtime Library retrieval；
+- arbitrary relation query DSL；
+- executable asset/plugin；
+- 第二套 Source / Game-local / Runtime identity。
