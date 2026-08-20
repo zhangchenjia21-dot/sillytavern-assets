@@ -79,26 +79,34 @@ Derived Pairwise Projection != Canonical Truth
 G9-02                         PASS / CLOSED
 G9-03 Unified Protocol       PASS / CLOSED
 G9-04 Adapter / Compiler     PASS / CLOSED
-G9-05 Creator                AUTHORIZED / NEXT
+G9-05A Creator Foundation    PASS / FROZEN
+G9-05B Creator Core          PASS / CLOSED
+G9-05C World Creator         AUTHORIZED / NEXT
 ```
 
-G9-03 / G9-04 current authority：
+当前 Creator / Asset authority：
 
 - `Vibe-Coding/main/sillytavern/G9-03_UnifiedAssetReferenceProtocol规格_v1.0_2026-08-20.md`
 - `Vibe-Coding/main/sillytavern/G9-03A_RuntimeModuleBinding与TypedConfig增量裁定_v1.0_2026-08-20.md`
-- `Vibe-Coding/main/sillytavern/G9-03_IndependentReview_最终收口_v1.0_2026-08-20.md`
 - `Vibe-Coding/main/sillytavern/G9-04_LegacyMarkdownAdapterCompilerBinding规格_v1.0_2026-08-20.md`
 - `Vibe-Coding/main/sillytavern/G9-04_IndependentReview_最终收口_v1.0_2026-08-20.md`
+- `Vibe-Coding/main/sillytavern/G9-05A_Creator基础模型与创作稿导入产品架构裁定_v1.0_2026-08-20.md`
+- `Vibe-Coding/main/sillytavern/G9-05B_CreatorCore草稿导入发布内部合同规格_v1.0_2026-08-20.md`
+- `Vibe-Coding/main/sillytavern/G9-05B_IndependentReview_最终收口_v1.0_2026-08-20.md`
 
 G9-04 已证明本仓库真实 World Pack / Character Card / Expansion Pack 可以通过确定性适配器转成 `TavernAssetV1`，再通过精确 Manifest 进入 G9-02 本局绑定与存档恢复轨道。
 
-现有 Semantic Assets 不需要手工改写为 JSON；适配器/编译器承担 authoring format → canonical machine object 的转换。
+G9-05B 已建立共享 Creator Core：Creator Draft 与正式 Source Asset 分离、revision/CAS、外部 `.md/.txt` 创作稿 evidence、任务级 AI 授权、复杂 Provider operation 运行时解析、ChangeSet/Undo、正式 Source Asset Library、确定性发布与崩溃恢复。
 
-G9-05 Creator 必须让人工编辑与 AI 辅助编辑最终产生同一种合法 Source Asset，并继续禁止：
+现有 Semantic Assets 不需要手工改写为 JSON；G9-04 Adapter 继续承担 legacy authoring format → canonical machine object，Creator 则直接从结构化 Draft 确定性发布同一种 `TavernAssetV1`。
+
+G9-05C World Creator 必须复用 G9-05B Core，并继续禁止：
 
 - Runtime Library retrieval；
 - arbitrary relation query DSL；
 - executable asset/plugin；
 - 第二套 Source / Game-local / Runtime identity；
+- 第二套 Creator Draft / Source Store / publish transaction；
 - 为 Creator 方便而私自发明 `tavern.asset.v1` 之外的第二资产协议；
+- AI 绕过本次任务级授权修改其它 Draft 区域；
 - AI 绕过用户显式 Save / Publish 直接发布资产。
