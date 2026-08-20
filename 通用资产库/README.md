@@ -59,9 +59,13 @@ Derived Pairwise Projection != Canonical Truth
 
 ## Current Next
 
-> **执行汉末三国《政争与势力》对 `EP-POLITICS-CORE` / ORG / Kinship 的真实消费者迁移。**
+资产语义维护线自身仍可继续执行已计划的真实消费者迁移：
+
+> **汉末三国《政争与势力》对 `EP-POLITICS-CORE` / ORG / Kinship 的迁移。**
 
 迁移收口后：Economy → War → Shared Foundation Convergence。
+
+这条资产维护路线与游戏项目 G9-04 Adapter / Compiler Gate 并行但不可混淆：资产正文仍是 canonical semantic source，G9-04 负责 deterministic machine adapter，不允许借机反向重写资产语义 owner。
 
 ## Archive
 
@@ -73,16 +77,27 @@ Derived Pairwise Projection != Canonical Truth
 
 ```text
 G9-02                         PASS / CLOSED
-G9-03 Unified Protocol       SEMANTICS FROZEN / PASS
-G9-03 Implementation         ACTIVE / NEXT
-G9-04 Adapter / Compiler     BLOCKED BY G9-03
+G9-03 Unified Protocol       PASS / CLOSED
+G9-04 Adapter / Compiler     AUTHORIZED / NEXT
+G9-05 Creator                BLOCKED BY G9-04
 ```
 
-G9-03 current canonical spec：
+G9-03 current protocol authority：
 
-`Vibe-Coding/main/sillytavern/G9-03_UnifiedAssetReferenceProtocol规格_v1.0_2026-08-20.md`
+- `Vibe-Coding/main/sillytavern/G9-03_UnifiedAssetReferenceProtocol规格_v1.0_2026-08-20.md`
+- `Vibe-Coding/main/sillytavern/G9-03A_RuntimeModuleBinding与TypedConfig增量裁定_v1.0_2026-08-20.md`
+- `Vibe-Coding/main/sillytavern/G9-03_IndependentReview_最终收口_v1.0_2026-08-20.md`
 
-资产线现有 Semantic Assets 不需要因为协议冻结而立即重写正文。G9-04 才负责把 current Markdown Source 通过 adapter / parser 转成 `TavernAssetV1` 并证明真实 Game-local binding。
+G9-04 将从本仓库 current canonical samples 中读取真实：
+
+- World Pack；
+- Character Card；
+- Expansion Pack；
+- Library 最小协议样本 / reference material；
+
+并通过 AI-independent adapter / parser 转成已冻结 `TavernAssetV1`，再证明 `TavernGameAssetManifestV1 → G9-02 Source Binding / Game-local lineage`。
+
+现有 Semantic Assets 不需要因为 G9-03 PASS 而手工改写为 JSON；adapter/compiler 承担 authoring format → canonical machine object 的转换。
 
 继续禁止资产线自行提前实现：
 
@@ -90,4 +105,5 @@ G9-03 current canonical spec：
 - Runtime Library retrieval；
 - arbitrary relation query DSL；
 - executable asset/plugin；
-- 第二套 Source / Game-local / Runtime identity。
+- 第二套 Source / Game-local / Runtime identity；
+- 为适配器方便而私自发明 `tavern.asset.v1` 之外的 hidden machine truth。
