@@ -81,7 +81,8 @@ G9-03 Unified Protocol       PASS / CLOSED
 G9-04 Adapter / Compiler     PASS / CLOSED
 G9-05A Creator Foundation    PASS / FROZEN
 G9-05B Creator Core          PASS / CLOSED
-G9-05C World Creator         AUTHORIZED / NEXT
+G9-05C World Creator         PASS / CLOSED
+Character Creator Vertical   AUTHORIZED / NEXT
 ```
 
 当前 Creator / Asset authority：
@@ -93,14 +94,18 @@ G9-05C World Creator         AUTHORIZED / NEXT
 - `Vibe-Coding/main/sillytavern/G9-05A_Creator基础模型与创作稿导入产品架构裁定_v1.0_2026-08-20.md`
 - `Vibe-Coding/main/sillytavern/G9-05B_CreatorCore草稿导入发布内部合同规格_v1.0_2026-08-20.md`
 - `Vibe-Coding/main/sillytavern/G9-05B_IndependentReview_最终收口_v1.0_2026-08-20.md`
+- `Vibe-Coding/main/sillytavern/G9-05C_WorldCreator产品纵向规格_v1.0_2026-08-20.md`
+- `Vibe-Coding/main/sillytavern/G9-05C_IndependentReview_最终收口_v1.0_2026-08-21.md`
 
 G9-04 已证明本仓库真实 World Pack / Character Card / Expansion Pack 可以通过确定性适配器转成 `TavernAssetV1`，再通过精确 Manifest 进入 G9-02 本局绑定与存档恢复轨道。
 
 G9-05B 已建立共享 Creator Core：Creator Draft 与正式 Source Asset 分离、revision/CAS、外部 `.md/.txt` 创作稿 evidence、任务级 AI 授权、复杂 Provider operation 运行时解析、ChangeSet/Undo、正式 Source Asset Library、确定性发布与崩溃恢复。
 
+G9-05C 已证明第一个真实 World Creator 产品纵向：四入口、三种创作起点、结构化 World workspace、完整 composition/dependency 编辑、exact AI scope、导入证据/未决/冲突继续创作定位、显式发布、Source 版本历史，以及发布后的合法 World dependency 可通过 G9-03 `validateAssetCatalog()`。
+
 现有 Semantic Assets 不需要手工改写为 JSON；G9-04 Adapter 继续承担 legacy authoring format → canonical machine object，Creator 则直接从结构化 Draft 确定性发布同一种 `TavernAssetV1`。
 
-G9-05C World Creator 必须复用 G9-05B Core，并继续禁止：
+后续 Character Creator 必须复用 G9-05B Core 与已验证的 Creator 产品模式，并继续禁止：
 
 - Runtime Library retrieval；
 - arbitrary relation query DSL；
