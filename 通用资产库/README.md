@@ -65,7 +65,7 @@ Derived Pairwise Projection != Canonical Truth
 
 迁移收口后：Economy → War → Shared Foundation Convergence。
 
-这条资产维护路线与游戏项目 Creator 开发并行但不可混淆：资产正文仍是 canonical semantic source；Creator 必须消费已冻结的统一资产协议，不得反向改写资产语义 owner。
+这条资产维护路线与游戏项目 Creator / Library Product 开发并行但不可混淆：资产正文仍是 canonical semantic source；产品层必须消费已冻结的统一资产协议，不得反向改写资产语义 owner。
 
 ## Archive
 
@@ -85,7 +85,15 @@ G9-05C World Creator         PASS / CLOSED
 G9-05D Character Creator     PASS / CLOSED
 G9-05E Use My Assets Game Creation
                               PASS / CLOSED
-G9-05F Expansion Creator     AUTHORIZED / NEXT
+G9-05F Expansion Creator     PASS / CLOSED
+G9-05G0 Real EP-CHAR Runtime Binding
+                              PASS / CLOSED
+G9-05G Primary Asset E2E Closure
+                              PASS / CLOSED
+Primary Asset End-to-End Closure Gate
+                              PASS / CLOSED
+
+Library Product Increment    AUTHORIZED / NEXT
 ```
 
 当前 Creator / Asset authority：
@@ -104,6 +112,13 @@ G9-05F Expansion Creator     AUTHORIZED / NEXT
 - `Vibe-Coding/main/sillytavern/G9-05D_IndependentReview_最终收口_v1.0_2026-08-21.md`
 - `Vibe-Coding/main/sillytavern/G9-05E_使用我的资产库创建游戏产品与内部合同规格_v1.0_2026-08-21.md`
 - `Vibe-Coding/main/sillytavern/G9-05E_IndependentReview_最终收口_v1.0_2026-08-22.md`
+- `Vibe-Coding/main/sillytavern/G9-05F0_ExpansionImport与HostPublishGate增量裁定_v1.0_2026-08-22.md`
+- `Vibe-Coding/main/sillytavern/G9-05F_ExpansionCreator产品纵向规格_v1.0_2026-08-22.md`
+- `Vibe-Coding/main/sillytavern/G9-05F_IndependentReview_最终收口_v1.0_2026-08-22.md`
+- `Vibe-Coding/main/sillytavern/G9-05G0_EP-CHAR-CORE真实RuntimeBinding增量裁定_v1.0_2026-08-22.md`
+- `Vibe-Coding/main/sillytavern/G9-05G_PrimaryAssetEndToEndClosure规格_v1.0_2026-08-22.md`
+- `Vibe-Coding/main/sillytavern/G9-05G_IndependentReview_最终收口_v1.0_2026-08-22.md`
+- `Vibe-Coding/main/sillytavern/G9-05G_阶段收口与NextGate状态覆盖_v1.0_2026-08-22.md`
 
 G9-04 已证明本仓库真实 World Pack / Character Card / Expansion Pack 可以通过确定性适配器转成 `TavernAssetV1`，再通过精确 Manifest 进入 G9-02 本局绑定与存档恢复轨道。
 
@@ -115,17 +130,10 @@ G9-05D 已证明 Character Creator 复用共享 Creator Core，并保持 `player
 
 G9-05E 已证明正式 Source Asset 可以经【使用我的资产库】按 exact snapshot 选择后进入本局：hard dependency 只由 selected exact target 满足，Character role 显式区分 `bound_only/opening_character/player_character`，复用 G9-04 binding，Final Create exactly-once，并走通 Session / Save / Restore。多版本 World / Character / Expansion 的产品选择身份均以 `assetRef + assetType + version + contentHash` 为准，不按 stable ref 自动继承 sibling version。
 
+G9-05F 已证明 Expansion Creator 复用共享 Creator Core，并通过 Program-owned Capability Catalog、Host Publish Gate、typed feature/module/dependency/UI declarations、AI identity protection、source revision 与显式 Publish 形成正式 Source 纵向；Publish 不等于当前游戏 Runtime activation。
+
+G9-05G 已证明真实汉末三国 World + 刘备 Character + `EP-CHAR-CORE` Expansion 可以从真实 Markdown / Creator source revision 形成 exact published Source，进入【使用我的资产库】建局，完成 production Runtime module binding、bounded capability projection、正式回合、Save/Restore、Crash/Resume/Recovery 与 Source version isolation。`EP-CHAR-CORE@0.1.5` 历史 proof snapshot 保持 immutable，production `0.1.6` 使用新的 exact Source identity；Expansion Publish 的 candidate/current Host 与 historical Source catalog 已分层，并关闭 append-after-durable / finalize-before-durable 的 exactly-once recovery crash window。
+
 现有 Semantic Assets 不需要手工改写为 JSON；G9-04 Adapter 继续承担 legacy authoring format → canonical machine object，Creator 则直接从结构化 Draft 确定性发布同一种 `TavernAssetV1`。
 
-后续 G9-05F Expansion Creator 必须复用 G9-05B Core 与 G9-03 Expansion wire contract，并继续禁止：
-
-- Runtime Library retrieval；
-- arbitrary relation query DSL；
-- executable asset/plugin；
-- 第二套 Source / Game-local / Runtime identity；
-- 第二套 Creator Draft / Source Store / publish transaction；
-- 为 Creator 方便而私自发明 `tavern.asset.v1` 之外的第二资产协议；
-- AI 绕过本次任务级授权修改其它 Draft 区域；
-- AI 绕过用户显式 Save / Publish 直接发布资产；
-- Creator Publish 自动激活 Runtime module；
-- Creator Draft 直接绑定或修改当前游戏。
+下一阶段 Library Product 必须先冻结其产品定位与 Authority：Library Source、Creator Reference、Runtime retrieval、Model context、player-safe reference 的边界不得混淆。不得因为主资产 E2E 已通过就自动恢复 arbitrary Runtime Library retrieval、relation query DSL 或 hidden-state browsing。
