@@ -82,7 +82,10 @@ G9-04 Adapter / Compiler     PASS / CLOSED
 G9-05A Creator Foundation    PASS / FROZEN
 G9-05B Creator Core          PASS / CLOSED
 G9-05C World Creator         PASS / CLOSED
-Character Creator Vertical   AUTHORIZED / NEXT
+G9-05D Character Creator     PASS / CLOSED
+G9-05E Use My Assets Game Creation
+                              PASS / CLOSED
+G9-05F Expansion Creator     AUTHORIZED / NEXT
 ```
 
 当前 Creator / Asset authority：
@@ -96,6 +99,11 @@ Character Creator Vertical   AUTHORIZED / NEXT
 - `Vibe-Coding/main/sillytavern/G9-05B_IndependentReview_最终收口_v1.0_2026-08-20.md`
 - `Vibe-Coding/main/sillytavern/G9-05C_WorldCreator产品纵向规格_v1.0_2026-08-20.md`
 - `Vibe-Coding/main/sillytavern/G9-05C_IndependentReview_最终收口_v1.0_2026-08-21.md`
+- `Vibe-Coding/main/sillytavern/G9-05D0_CharacterProfileFields增量裁定_v1.0_2026-08-21.md`
+- `Vibe-Coding/main/sillytavern/G9-05D_CharacterCreator产品纵向规格_v1.0_2026-08-21.md`
+- `Vibe-Coding/main/sillytavern/G9-05D_IndependentReview_最终收口_v1.0_2026-08-21.md`
+- `Vibe-Coding/main/sillytavern/G9-05E_使用我的资产库创建游戏产品与内部合同规格_v1.0_2026-08-21.md`
+- `Vibe-Coding/main/sillytavern/G9-05E_IndependentReview_最终收口_v1.0_2026-08-22.md`
 
 G9-04 已证明本仓库真实 World Pack / Character Card / Expansion Pack 可以通过确定性适配器转成 `TavernAssetV1`，再通过精确 Manifest 进入 G9-02 本局绑定与存档恢复轨道。
 
@@ -103,9 +111,13 @@ G9-05B 已建立共享 Creator Core：Creator Draft 与正式 Source Asset 分�
 
 G9-05C 已证明第一个真实 World Creator 产品纵向：四入口、三种创作起点、结构化 World workspace、完整 composition/dependency 编辑、exact AI scope、导入证据/未决/冲突继续创作定位、显式发布、Source 版本历史，以及发布后的合法 World dependency 可通过 G9-03 `validateAssetCatalog()`。
 
+G9-05D 已证明 Character Creator 复用共享 Creator Core，并保持 `playerCharacterSupported` 只是 Source capability、No-Phantom、三态字段、referenceSources/dependency、exact AI scope、发布/版本历史与 Runtime 隔离。
+
+G9-05E 已证明正式 Source Asset 可以经【使用我的资产库】按 exact snapshot 选择后进入本局：hard dependency 只由 selected exact target 满足，Character role 显式区分 `bound_only/opening_character/player_character`，复用 G9-04 binding，Final Create exactly-once，并走通 Session / Save / Restore。多版本 World / Character / Expansion 的产品选择身份均以 `assetRef + assetType + version + contentHash` 为准，不按 stable ref 自动继承 sibling version。
+
 现有 Semantic Assets 不需要手工改写为 JSON；G9-04 Adapter 继续承担 legacy authoring format → canonical machine object，Creator 则直接从结构化 Draft 确定性发布同一种 `TavernAssetV1`。
 
-后续 Character Creator 必须复用 G9-05B Core 与已验证的 Creator 产品模式，并继续禁止：
+后续 G9-05F Expansion Creator 必须复用 G9-05B Core 与 G9-03 Expansion wire contract，并继续禁止：
 
 - Runtime Library retrieval；
 - arbitrary relation query DSL；
@@ -114,4 +126,6 @@ G9-05C 已证明第一个真实 World Creator 产品纵向：四入口、三种�
 - 第二套 Creator Draft / Source Store / publish transaction；
 - 为 Creator 方便而私自发明 `tavern.asset.v1` 之外的第二资产协议；
 - AI 绕过本次任务级授权修改其它 Draft 区域；
-- AI 绕过用户显式 Save / Publish 直接发布资产。
+- AI 绕过用户显式 Save / Publish 直接发布资产；
+- Creator Publish 自动激活 Runtime module；
+- Creator Draft 直接绑定或修改当前游戏。
