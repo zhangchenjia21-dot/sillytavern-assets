@@ -4,24 +4,12 @@ aliases:
   - 三国经济治理机制拓展包
   - Han Late Three Kingdoms Economy and Governance Expansion
 created: 2026-08-16
-updated: 2026-08-16
+updated: 2026-08-24
 status: candidate
 version: 0.2
-workflow_mode: light-asset
-operation_mode: revise
 asset_type: expansion-pack
-output_profile: obsidian-markdown
 asset_family: 汉末三国：天下未定
-world_pack: "[[汉末三国_天下未定_World_Pack_v0.2.2]]"
-politics_expansion: "[[汉末三国_政争与势力_Expansion_Pack_v0.2.1]]"
-character_core: "[[人物能力与技艺_Expansion_Pack_v0.1.5]]"
-survival_expansion: "[[生存需求与环境_Expansion_Pack_v0.2]]"
-health_core: "[[身体状态核心_Expansion_Pack_v0.1]]"
-war_expansion: "[[汉末三国_军略与战争_Expansion_Pack_v0.2]]"
-history_expansion: "[[汉末三国_历史参照与分歧_Expansion_Pack_v0.2]]"
-creator_binding: pending
-asset_spec_binding: pending
-runtime_asset: true
+world_pack: "[[汉末三国_天下未定_World_Pack_v0.2.3]]"
 language: zh-CN
 tags:
   - 三国
@@ -39,820 +27,325 @@ tags:
 # 汉末三国：财赋与治理｜Expansion Pack v0.2
 
 > [!abstract] 一句话定位
-> **本包拥有汉末三国社会与地方层的财赋、粮食与大宗物资、生产、人口与劳力、市场、行政执行、征发负担、公共工程、运输与民生压力。**
+> **把汉末世界的财政、粮食与大宗物资、生产、人口与劳力、市场、行政执行、征发负担、公共工程、运输与民生压力，变成一套持续的、有分量的游戏机制。**
 >
-> 它回答：
+> 本包回答的问题是：
 >
-> **“钱粮从哪里来、在哪里、怎样生产和移动；一个地方有权实施政策以后，行政网络实际做不做得到；战争、灾荒和过度征发怎样改变社会经济基础？”**
+> **“钱粮从哪里来、在哪里、怎样生产和移动？一道政令颁布之后，地方行政网络实际做不做得到？战争、灾荒和过度征发怎样改变社会的经济基础？”**
 >
-> 它不拥有 Character 的饥饿、口渴、睡眠、伤病和身体疲劳，也不拥有政治 Authority，不拥有 Character Skill State。
-
-> [!important] v0.2 重构摘要
-> 相对旧 v0.1.3：
->
-> - 删除旧三国人物能力包依赖，改为贡献 Economy / Governance Skill Definitions 给 `EP-CHAR-CORE`；
-> - 正式建立 `Economy → Survival → Health` 三层因果链；
-> - `Administrative Reach` 重命名 / 收口为 `Local Governance Execution Capacity`；
-> - 明确 Bulk Resource Stock 与 World OS Item / Placement 的桥接边界；
-> - 不再把个人 Physical Fatigue / Injury / Disease 视为 Economy 状态；
-> - 与新版 Politics v0.2 的 Authority / Jurisdiction 分权；
-> - 与新版 War v0.2 建立正式 Supply / Damage / Demographic Handoff；
-> - 不拥有一级“经济”Surface，改为贡献到 Politics 拥有的 `势力 / 政务`；
-> - G9 之前只冻结语义，不冻结机器 Schema。
+> 它不拥有人物的饥饿、口渴、睡眠与伤病，不拥有政治权限，也不替任何政策做决定。
 
 ---
 
-# 1. Scope Lock
+# 1. 这个包为游戏增加什么
 
-## 1.1 本包必须负责
+装上这个包，汉末世界从“一个有商店和钱包的背景板”变成一套真实运转的社会经济：
 
-- Treasury / 可支配财力；
-- Grain / Food Bulk Stock；
-- Strategic Material Stock；
-- Storage Context；
-- Productive Capacity；
-- Agriculture / production cycle；
-- Demographic State；
-- Labor Availability；
-- Market Condition；
-- Local Governance Execution Capacity；
-- Public Burden；
-- Livelihood Pressure；
-- Infrastructure；
-- Public Works；
-- Tax / Extraction economic outcome；
-- Relief economic outcome；
-- Bulk Transport；
-- Resettlement / displacement economic state；
-- Economy Event；
-- Economy Knowledge / safe projection；
-- War / Politics / Survival 的受控 Handoff。
+- 钱粮有来源、有位置。国库充盈不等于前线有粮，城中无米时怀里揣着金子也买不到一顿饭；
+- 政令与执行分离。一道免税令可以合法颁布，但地方官僚网络执行到什么程度、豪强配不配合、消息传不传到边县，是另一本账；
+- 人口与劳力是活的基础。征兵抽走的丁壮不会同时站在田里，徭役征发的民夫不会在秋收时在家收割——每一个征发决定都在未来某个季节结账；
+- 战争与灾荒真实改变经济基础。烧毁的水利、逃散的编户、中断的商路都写入世界，恢复需要时间与投入，不是停战那一刻自动复原；
+- 玩家可以经营一条完整的治理道路：屯田、赈济、兴修水利、整顿税制、安置流民、组织商队——并承担每个决定的长期后果。
 
-## 1.2 明确不负责
+# 2. 它关注什么、引入什么因果逻辑
 
-- Political Authority / Jurisdiction；
-- Office / Political Control；
-- Character Capability mastery；
-- Nutrition / Hydration / Sleep Need；
-- Physical Fatigue / Weakness；
-- Injury / Disease / Poison；
-- Treatment / Recovery；
-- Formation / Campaign / Battle Outcome；
-- Character Relationship；
-- World OS Task / Commitment；
-- Item Placement 的第二事实源；
-- RNG / Dice / Formal Outcome / Atomic Commit。
+本包关注**社会与地方层的经济事实**：钱粮物资、生产、人口劳力、市场、行政执行、工程与民生。
 
----
+它引入的核心因果逻辑是：
 
-# 2. Ownership Map
+- **资源必须有来源**：粮食来自耕种与征购，财货来自赋税与经营，没有凭空入账；
+- **大宗物资必须有位置**：官仓的粮在官仓，路上的粮在路上；调拨需要时间、路线、劳力与护卫；
+- **有钱不等于有粮**：购买力受市场与库存约束，灾年的粮价不是和平年的粮价；
+- **生产需要时间**：农时、水利、劳力与安全共同决定产出，屯田第一年不会还清全部投入；
+- **市场不是无限商店**：供给有上限，大额交易本身会扰动价格；
+- **极端征收可以尝试，但后果真实**：竭泽而渔收到的税，以户口逃亡、生产凋敝和民怨的形式偿还；
+- **人口不是货币**：征兵、徭役、迁徙、死亡是四笔不同的账，各自有各自的长期后果；
+- **政策必须经过执行**：政治决定“要不要做”，本包回答“实际做到了什么程度”。
 
-| 概念 | 唯一 Owner | Economy 如何使用 |
-|---|---|---|
-| Character Skill State | EP-CHAR-CORE | 读取相关 Skill |
-| Political Authority / Control | 政争与势力 | 验证治理权限 |
-| Character Survival Need | EP-SURVIVAL | 提供资源可用性 |
-| Persistent Bodily State | EP-HEALTH-CORE | 不直接拥有 |
-| Treasury | 本 Expansion | 正式职责 |
-| Bulk Grain / Materials | 本 Expansion | 正式职责 |
-| Productive Capacity | 本 Expansion | 正式职责 |
-| Demographic / Labor | 本 Expansion | 正式职责 |
-| Market | 本 Expansion | 正式职责 |
-| Governance Execution Capacity | 本 Expansion | 正式职责 |
-| Public Burden / Livelihood Pressure | 本 Expansion | 正式职责 |
-| Infrastructure / Public Works | 本 Expansion | 正式职责 |
-| Bulk Transport | 本 Expansion | 正式职责 |
-| Discrete Item Instance / Placement | World OS Item owner | 通过桥接事务 |
-| War Supply Consumption | War consumes Economy stock | 正式 Handoff |
-| War damage / casualties | War Event → Economy | 接收后果 |
-| Historical Reference | 历史参照与分歧 | 输出 Event |
-| Program Outcome / Commit | Runtime | 执行 |
+# 3. 最重要的区分：权限、能力与执行
 
----
-
-# 3. Economy → Survival → Health
-
-这是本版最重要的新链。
-
-## 3.1 社会资源可用性属于 Economy
-
-例如：
-
-- 城中粮价高涨；
-- 官仓只剩少量粮；
-- 市场没有可饮水源；
-- 旅店和住所有无；
-- 药材短缺。
-
-属于：
-
-> 社会 / 地方 Resource Availability。
-
-## 3.2 Character Need 属于 Survival
-
-当一个 Character 实际无法获得食物：
+面对一项治理举措，请 GM 始终分清三层：
 
 ```text
-Economy:
-food unavailable / inaccessible
-↓
-Survival:
-Nutrition Need unmet
+政治：有没有权做这件事（权威与管辖，《政争与势力》的事）
+人物能力：执行者本人有多擅长（《人物能力与技艺》的事）
+本包：地方组织网络实际能执行到什么程度
 ```
 
-Economy 不保存：
+## 3.1 地方治理执行能力
 
-> 角色当前 Hunger。
+一个政权的命令能多大程度变成地方现实，由其治理执行能力决定。它由以下因素共同形成：
 
-## 3.3 Bodily Consequence 属于 Health
+- 官僚网络的完整与可靠；
+- 信息传递的速度与准确；
+- 地方豪强、宗族、吏员的配合程度；
+- 实际控制范围；
+- 道路、仓储等基础设施；
+- 可用的人员；
+- 当前秩序。
 
-如果缺粮长期持续：
+它不是人物的行政技艺，不是官职权限，不是政治控制，更不是“治理度 0–100”的数值。同一道政令，在经营多年的根据地与刚占领的边县，执行结果可以天差地别——而两者在政治名义上同样“合法”。
+
+## 3.2 命令成立 ≠ 结果成立
+
+政治命令合法成立，不等于经济结果自动成立。免税令颁布了，地方胥吏可能阳奉阴违；征粮令颁布了，仓库可能真的收不上来那么多。GM 应分别裁定：政令的政治效力归政治，执行到什么程度、实际收到多少、留下什么怨气，归本包。
+
+# 4. 三层区分：社会物资、生存需求、身体后果
+
+这是本包与其它包之间最重要的边界，请 GM 始终分清：
 
 ```text
-Survival:
-Nutrition Deficit
-↓
-Health Handoff
-↓
-Health:
-Weakness / physiological disturbance / hidden HP effect
+地区饥荒 ≠ 人物饥饿 ≠ 人物身体状况
 ```
 
-因此：
+- **社会层**：城中粮价高涨、官仓见底、市场买不到干净饮水、药材短缺——这些是地方资源可用性，归本包；
+- **人物层**：某个具体角色今天吃没吃上饭、喝没喝到水、睡没睡觉——归《生存需求与环境》；
+- **身体层**：长期匮乏造成的虚弱、疾病与身体损伤——归《身体状态核心》。
 
-```text
-地区饥荒
-!= Character Hunger
-!= Character Bodily Condition
-```
+三层按因果衔接：地方缺粮使人物难以获得食物，长期营养不足最终损害身体——但每一层的事实各自成立、各自记账。如果同时启用那些玩法，本包中的饥荒与匮乏会在人物身上获得更细致的表现；没有启用时，本包照常运转，社会层的经济现实依然完整。
 
-三层必须分开。
+# 5. 大宗物资与具体什物
 
----
+经济世界同时存在两种形态的资源，请注意它们之间的一本账：
 
-# 4. Character Skill Contribution
+- **大宗库存**：官仓粮食、府库财货、木材、金属、布帛等按数量管理的大宗、可替代物资。每一处库存绑定：归属、存放地点、可用性、是否锁定用途、数量；
+- **具体什物**：某一袋粮、某一箱铜钱、某一件工具——具体的、可携带的物品。
 
-本包向 `EP-CHAR-CORE` 统一 Skill Registry 贡献六项 Skill Definition。
+两者之间的往来必须对应：从官仓大账支取一批粮，大账减少，具体什物出现；什物存回仓库，大账相应增加。**同一批物资不允许既算在官仓大账上、又算在某人行囊里**——双账互不通气是经济玩法崩坏的根源。
 
-## 行政
+# 6. 财政、粮食与物资
 
-- 公文与事务组织；
-- 多事项协调；
-- 地方政务执行；
-- 官僚流程。
+## 6.1 库藏财力
 
-## 财计
+政权或家族可支配的财货，用于采购、支付、雇佣、投资与公共支出。有钱不等于当前地点有粮——尤其在灾年与战区。
 
-- 账目；
-- 收支；
-- 财力配置；
-- 资源规划。
+## 6.2 粮食与大宗库存
 
-## 商业
+回答：有多少、在哪里、谁拥有或控制、是否可调拨、是否锁定用途、是否有损耗风险。粮食会腐坏，仓储会失火，押运会被劫——库存不是静态数字。
 
-- 买卖；
-- 渠道；
-- 市场判断；
-- 交易组织。
+## 6.3 战略物资
 
-## 农政
+只把持续影响玩法的重要实物（军械原料、马匹、船材、药材等）升级追踪。不建立无所不包的商品百科——一担柴、一筐菜照常叙事即可。
 
-- 农业生产；
-- 土地；
-- 农时；
-- 农业治理。
+# 7. 生产与农业
 
-## 工程与水利
+一个地区或产地的持续产出能力，受以下因素影响：
 
-- 公共工程；
-- 灌溉；
-- 河渠；
-- 建设与维护组织。
-
-## 运输组织
-
-- 大宗运输；
-- 中转；
-- 仓储协调；
-- 民用物流组织。
-
-Character 当前 mastery：
-
-> 只存在 EP-CHAR-CORE。
-
----
-
-# 5. Politics vs Governance Execution
-
-本包不回答：
-
-> “谁有权征税 / 开官仓 / 征发劳役？”
-
-这是 Politics。
-
-正确三层：
-
-```text
-Politics:
-有没有 Authority / Jurisdiction
-
-Character Core:
-执行者本人有多擅长
-
-Economy:
-地方组织网络实际能执行到什么程度
-```
-
-## 5.1 Local Governance Execution Capacity
-
-旧 `Administrative Reach` 正式收口为：
-
-> **Local Governance Execution Capacity｜地方治理执行能力**
-
-它由：
-
-- 官僚网络；
-- 信息传递；
-- 地方配合；
-- 控制范围；
-- 基础设施；
-- 人员；
-- 当前秩序；
-
-共同形成。
-
-它不是：
-
-- Character 行政 Skill；
-- Office 权限；
-- Political Control；
-- “治理度 0–100”。
-
----
-
-# 6. Bulk Resource vs Item / Placement
-
-这是 G9 必须保护的关键边界。
-
-## 6.1 Bulk Resource Stock
-
-Economy 可以拥有：
-
-> **大宗、可替代、按数量或语义规模管理的 Resource Stock。**
-
-例如：
-
-- 官仓粮食；
-- 地方粮秣；
-- 财货；
-- 木材；
-- 金属；
-- 布帛。
-
-每个 Stock 至少语义上绑定：
-
-- Owner；
-- Storage / Place；
-- Availability；
-- Reserved purpose；
-- Quantity / semantic amount。
-
-## 6.2 Discrete Item Instance
-
-当资源被实例化为：
-
-- 某袋粮；
-- 某箱铜钱；
-- 某件具体工具；
-- 某个可携带物品；
-
-其当前 Placement：
-
-> 归 World OS Item / Placement。
-
-## 6.3 Materialization / Aggregation Bridge
-
-禁止同一批资源同时存在：
-
-```text
-Economy grain +100
-+
-Inventory rice bags +100
-```
-
-却没有扣减关系。
-
-正确链：
-
-```text
-Bulk Stock
-↓ atomic withdraw/materialize
-Discrete Item Instance
-```
-
-反向：
-
-```text
-Discrete fungible items
-↓ atomic deposit/aggregate
-Bulk Stock
-```
-
-G9 需要正式桥接 Contract。
-
----
-
-# 7. Core States
-
-## 7.1 Treasury
-
-可用于：
-
-- 采购；
-- 支付；
-- 雇佣；
-- 投资；
--公共支出。
-
-有钱：
-
-> 不等于当前地点有粮。
-
-## 7.2 Grain / Food Bulk Stock
-
-回答：
-
-- 有多少；
-- 在哪里；
-- 谁拥有 / 控制；
-- 是否可调拨；
-- 是否锁定用途；
-- 是否有损耗风险。
-
-## 7.3 Strategic Material Stock
-
-只把持续影响玩法的重要实物升级为 Resource。
-
-不建立无限商品百科。
-
-## 7.4 Productive Capacity
-
-表示某地区 / Production Site 持续产出能力。
-
-受：
-
-- 劳力；
-- 季节；
-- 水利；
+- 劳力（农忙时劳力在哪里）；
+- 季节与农时；
+- 水利与灌溉；
 - 战争破坏；
-- 安全；
-- 技术与政策；
+- 治安与安全；
+- 技术与政策。
 
-影响。
+**屯田**是典型的长期生产举措：招募流民、分配土地、组织军屯或民屯，第一年投入大于产出，数年之后才成为稳定的粮源。它不是即时产粮的按钮——也正因如此，谁先下定决心屯田，谁就在三年后的战争中占先。
 
-## 7.5 Demographic State
+# 8. 人口与劳力
 
-保存合理粒度：
+## 8.1 人口状态
 
-- 人口；
-- 流入 / 流出；
-- displaced / refugee pressure；
-- 家庭稳定；
-- 长期死亡 / 迁徙后果。
+按合理粒度追踪：在编人口、流入与流出、流民压力、家庭稳定、长期死亡与迁徙的后果。人口不是一次性资源点——一个郡的编户是十几年生聚的结果，一场兵燹可以让它十年恢复不过来。
 
-人口不是：
+## 8.2 劳力可用性
 
-> 一次性 Resource 点。
+与人口相关但不同。征兵、农忙、疾病、徭役都会改变当前可投入生产、运输与工程的劳力。同一个人不能同时在前线当兵、在田里收割、在河堤上服役——每一项征发都在从别处抽走劳力。
 
-## 7.6 Labor Availability
+# 9. 市场与贸易
 
-与人口相关但不同。
+市场状况按高层语义把握：供给充足、正常、紧缺、严重短缺、交易受阻、价格压力。不做全国实时价格模拟——重要的是与玩法相关的判断：这里买不买得到、贵不贵、大宗采购会不会把价格买上天。
 
-征兵、农忙、疾病、徭役都会改变：
+战乱、封锁、歉收都会让市场萎缩；恢复秩序与商路则让它慢慢回暖。大商人的一次投机、官府的一次平粜，都可以是真实的经济事件。
 
-> 当前可投入生产 /运输 /工程的劳力。
+# 10. 赋税、征发与公共负担
 
-## 7.7 Public Burden
+公共负担综合表达税、征粮、徭役、运输摊派、重复摊派对居民的现实压力。它是治理的核心杠杆，也是治理的核心风险：
 
-综合表达：
+- 轻徭薄赋积蓄民力，但府库增长缓慢；
+- 重税急征快速充实府库，但提高负担、侵蚀生产、积累民怨；
+- 极端征收可以尝试——乱世中屡见不鲜——但户口逃亡、生产凋敝、地方敌意都会真实发生。
 
-- 税；
-- 征粮；
-- 徭役；
-- 运输；
-- 重复摊派；
+负担与民生压力不是对统治者的“好感度”——它是对生活状态的经济描述，至于居民因此拥护还是怨恨谁，由政治与叙事去裁定。
 
-对居民的现实负担。
+# 11. 民生压力
 
-## 7.8 Livelihood Pressure
+地方居民面对粮食、收入、灾害、战争、市场、债务与失业的综合生活压力。民生压力是慢变量：一场旱灾不会立刻变成流民潮，但连续两年歉收加上不停歇的征发，就会把人赶上路。流民既是要赈济的负担，也是可以招募的人口——取决于治理者怎样应对。
 
-表示地方居民面对：
+# 12. 基础设施与公共工程
 
-- 粮食；
-- 收入；
-- 灾害；
-- 战争；
-- 市场；
-- 债务 /失业；
+道路、水利、桥梁、仓储等长期设施的可用性、维护状况、作用范围与破坏情况。公共工程需要建设与维护：一项灌溉工程需要劳力、物料、时间与组织才能建成，建成后需要持续维护才能不坏。
 
-的综合生活压力。
+战争与灾荒对设施的破坏真实写入经济事实；恢复需要时间与投入——战争结束那一刻，烧毁的堤坝不会自动合龙。
 
-它不等于：
+# 13. 运输
 
-> 对统治者的 Sentiment。
+大宗运输需要时间、路线、运力、劳力与护卫。粮食从产粮区到前线，是一段真实的旅程：要征发民夫、征集车船、经过真实的郡县与山河，沿途可能被劫、被阻、被天气耽搁。运输线是军事与经济的交汇点，也是乱世中最常被攻击的软肋。
 
-## 7.9 Market Condition
+# 14. 人物能力与经济治理
 
-高层表示：
+本包为人物能力体系（《人物能力与技艺》）提供经济与治理领域的技艺语义，人物造诣高低由能力机制统一承载。本包定义的技艺领域：
 
-- 供给充足；
-- 正常；
-- 紧缺；
-- 严重短缺；
-- 交易受阻；
-- 价格压力。
+- **行政**：公文与事务组织、多事项协调、地方政务执行、官僚流程；
+- **财计**：账目、收支、财力配置、资源规划；
+- **商业**：买卖、渠道、市场判断、交易组织；
+- **农政**：农业生产、土地、农时、农业治理；
+- **工程与水利**：公共工程、灌溉、河渠、建设与维护的组织；
+- **运输组织**：大宗运输、中转、仓储协调、民用物流。
 
-不默认做全国实时价格模拟。
+能力影响执行质量——账目更清楚、工程组织得更省、商路选得更准——但不能凭空创造资源：财计再好的主簿，也变不出仓里没有的粮。
 
-## 7.10 Infrastructure
+# 15. 常见经济与治理行为
 
-道路、水利、桥梁、仓储等长期设施的：
+高频结构化行为包括但不限于：
 
-- 可用性；
-- 维护；
-- 作用范围；
-- 破坏。
+- 购买、出售；
+- 经营产业；
+- 组织农业生产；
+- 物资存入与支取；
+- 大宗调拨与运输；
+- 征税、征粮；
+- 征发徭役、组织公共劳役；
+- 赈济；
+- 减免、缓征；
+- 兴修公共工程、修复设施；
+- 屯田；
+- 安置流民；
+- 高位者以私人身份从事低阶经济活动。
 
----
+这份清单是常见路径，不是行为全集。**权限约束正式效果，不约束尝试**：没有权限的人不能合法调拨官仓，但可以偷、可以骗、可以强取——尝试照常展开，合法效果不成立，后果照常发生。皇帝亲自到市上卖粮也是允许的：交易本身成立，同时产生时间、职责与社会观感的代价。
 
-# 8. Core Rules
+# 16. 如何自然裁定
 
-1. 资源必须有来源；
-2. Bulk Resource 必须有位置 / Storage Context；
-3. 有钱不等于有粮；
-4. 生产需要权威时间；
-5. 运输不是瞬移；
-6. Market 不是无限商店；
-7. 极端征收可以尝试，但后果真实；
-8. 人口不是普通可消费货币；
-9. 征兵 / 徭役 /迁徙 /死亡必须分开；
-10. 公共工程需要建设与维护；
-11. 战争破坏必须进入正式经济 State；
-12. 灾后 /战后恢复需要时间与投入；
-13. 政策必须经过 Governance Execution；
-14. 身份不构成经济行为输入禁令；
-15. Economy 不创建 Character Hunger / Injury；
-16. UI 不直接修改 Resource。
+面对一次经济或治理尝试，GM 按下面的顺序掂量：
 
----
+1. 当事人的意愿与授权（玩家与 NPC 都有自主权）；
+2. 需要权限时：政治权威与管辖是否覆盖；
+3. 执行者的能力造诣；
+4. 资源、地点、时间是否支持；
+5. 治理执行能力能把它落实几成；
+6. 市场、人口、劳力、基础设施的当前状态；
+7. 条件清楚的地方直接得出确定结果；真正不确定的地方再引入偶然性。
 
-# 9. High-frequency Actions
+不需要掷骰的情形：正常的小额买粮（市场供给正常时直接成交）、有钱但本地无粮（直接买不到）、开仓赈济（库存真实减少）、无权限者要求合法调拨（直接不成立）。经济与治理的世界大部分时候是因果的，不是随机的。
 
-- Purchase / Sell；
-- Establish Business；
-- Agricultural Production；
-- Store / Withdraw；
-- Bulk Transfer；
-- Tax / Extraction；
-- Corvee / Public Labor；
-- Relief；
-- Tax Reduction / Deferral；
-- Public Works；
-- Repair Infrastructure；
-- Tuntian；
-- Resettle Refugees；
-- Bulk Transport；
-- Private low-level economic activity by high-status character。
+# 17. 与战争的关系
 
-Action Definition：
+战争是经济最大的消费者与破坏者，两者通过真实资源往来：
 
-> 不是自由输入白名单。
+- **经济供养战争**：军队的粮食、财货、军械物资、运输力与兵员，全部来自经济的真实库存与人口。军队不拥有独立于经济的第二份军粮——粮道一断，前线即刻挨饿（见《军略与战争》）；
+- **战争回馈破坏**：资源消耗、仓储损失、道路桥梁水利的损毁、人口死亡与被俘、流民、劳力损失、运输线中断、军事征发——战争造成的每一处创伤都真实写入经济事实；
+- **战争结束不自动恢复**：停战之后，烧毁的村庄、逃散的户口、荒废的水利仍在原地，等待投入与时间去修复。
 
----
+# 18. 与政治的关系
 
-# 10. Resolution Contract
+政治提供权限、政策与决定：谁有权征税、开官仓、征发劳役，税率几何、赈济与否——这些是政治问题。本包回答执行层面：
 
-```text
-Economic / Governance Attempt
-↓
-Player / NPC Authorization
-↓
-Politics Authority if required
-↓
-Character Capability
-↓
-Resource / Place / Time
-↓
-Local Governance Execution Capacity
-↓
-Market / Population / Labor / Infrastructure
-↓
-确定性条件
-↓
-必要时 Program RNG
-↓
-Economic Outcome Candidate
-↓
-Validation
-↓
-Atomic Commit
-↓
-Resource / State / Event
-↓
-Survival / War / Politics / History Handoff
-↓
-Player-safe Feedback
-```
+- 政令实际执行到什么程度；
+- 实际收入多少、资源如何移动；
+- 地方承受了什么、留下什么长期后果。
 
----
+政治的每一项治理决定，最终都要经过本包的检验：仓里有没有粮、吏员办不办事、路上通不通、百姓还扛不扛得住。
 
-# 11. War Integration
+# 19. 与历史参照的关系
 
-## Economy → War
+高影响经济事实——屯田建成、饥荒与粮荒、大规模流民、经济崩溃、重大恢复、大型公共工程、赋税危机——具有历史级的分量，会成为《历史参照与分歧》对照与批注的素材。历史包只读取，不回写；经济的走向永远由当前世界自己的条件决定。
 
-提供：
+# 20. 信息边界：谁知道什么
 
-- Grain；
-- Treasury；
-- strategic materials；
-- bulk transport；
-- labor / recruitment source；
-- infrastructure；
-- supply availability。
+- **世界事实与玩家知识分开**：某座官仓实有八万二千余斛是世界的真相；玩家凭粗账只掌握“约八万斛、储备充足”。经手人才知细账，外人只见表面；
+- **默认隐藏的**：私人与隐匿的仓库、远方的真实库存、秘密的截留与亏空、地方豪强隐瞒的田亩户口；
+- **合法的信息渠道**：账簿、仓吏报告、市访、实地查验、审计清点。治理者想知道真相，得付出了解真相的努力——这正是“治大国若烹小鲜”的玩法质感。
 
-War 不能自己创建：
+# 21. 值得持久化的状态
 
-> 第二份军粮库存。
+以下经济事实一旦成立，就是游戏世界的持久真相，值得写入游戏工作区并跨会话延续：
 
-## War → Economy
+- 各方库藏财力；
+- 各处大宗库存（含归属、位置、锁定用途）；
+- 生产能力与农业状态；
+- 人口与劳力状态；
+- 治理执行能力的格局；
+- 公共负担与民生压力；
+- 市场状况；
+- 基础设施与进行中的公共工程；
+- 进行中的大宗运输；
+- 大宗库存与具体什物之间已结算的支取与存回；
+- 相关的知识与账簿掌握在谁手里。
 
-提交：
+读档后这些事实原样恢复：不重复收税，不重复发放赈粮，不重复结算物资支取，也不用后来补充的史料覆盖存档时的经济状态。
 
-- resource consumption；
-- warehouse loss；
-- road / bridge / irrigation damage；
-- population death / capture / displacement；
-- labor loss；
-- route disruption；
-- military requisition Event。
+# 22. 游玩质感
 
-Economy 根据正式 War Outcome：
+- **成功的质感**：治理的成功是慢功夫——三年屯田换来仓廪充实，一次平粜压住粮价，一条修通的商路让凋敝的郡县重新有了人气。成果以“今年比去年轻一些”的方式被感知；
+- **失败的质感**：经济失败很少是轰然巨响，多是静悄悄的亏空——账面还在，仓里空了；政令还在，没人执行了。等玩家察觉时，窟窿往往已经存在了很久；
+- **推进的质感**：财政与治理的进展是积累式的：户口一册册补上，水利一段段修好，商路一条条打通。每一步都有名字、有账簿、有经手人；
+- **恶化的质感**：民生恶化是渗漏式的——先是粮价悄悄上涨，再是集市上少了几张熟面孔，然后是路边的流民、空掉的村落。GM 应让它以“越来越多的日常细节开始不对劲”的方式呈现，而不是一纸“经济崩溃”的通报。
 
-> 更新社会经济 State。
+# 23. 它不拥有什么
+
+明确不属于本包的：
+
+- 政治权威、管辖、官职与政策决定（《政争与势力》）；
+- 人物的技艺造诣与人格（《人物能力与技艺》、人物卡）；
+- 人物的饥饿、口渴、睡眠与生存负荷（《生存需求与环境》）；
+- 人物的伤病、虚弱、治疗与身体后果（《身体状态核心》）；
+- 军队、战役、军事占领（《军略与战争》）；
+- 私人关系与感情；
+- 历史参照与分歧（《历史参照与分歧》）；
+- 随机性与任何形式的最终裁定权——本包提供经济逻辑，结果在游戏世界里成立。
+
+# 24. 其它包如何充实它
+
+- **《政争与势力》**让财政与治理有政治的主体、权限与争端，让“谁的钱粮”真实可争；
+- **《军略与战争》**让经济成为战争的真实基础，让后勤与破坏都有去处；
+- **《生存需求与环境》**让饥荒与匮乏落到具体人物的日常；
+- **《身体状态核心》**让长期困顿留下身体印记；
+- **《历史参照与分歧》**给经济兴衰提供历史纵深的回响。
+
+这些充实都是锦上添花，不是隐藏的前提：任何一方缺席，本包依然完整可玩；各协同方也无需为了配合本包改变自己的工作方式。
+
+# 25. 裁定参考：常见情形
+
+以下情形供 GM 把握分寸，不是穷举：
+
+1. 正常小额买粮：市场供给正常时直接成交，无需偶然裁定；
+2. 有钱但本地无粮：买不到就是买不到——或者支付天价、或托人转圜，但“瞬间平价买到”不成立；
+3. 皇帝亲自卖粮：允许，交易成立，同时产生时间、职责与社会观感的真实代价；
+4. 无权限调官仓：合法调拨不成立；偷、骗、强取可以尝试，后果照常展开；
+5. 开仓赈济：库存真实减少，粮食真实流向灾民，没有凭空复制；
+6. 极端征税：可以执行，但公共负担上升，户口逃亡与生产凋敝的风险真实累积；
+7. 屯田：长期生产举措，不是即时产粮；前几年看投入，之后看产出；
+8. 过重徭役：劳力可用性下降，农时耽误，当年收成埋单；
+9. 战争破坏水利：生产能力随之下降，直到投入修复；
+10. 战争结束：破坏不自动恢复，重建需要时间与资源；
+11. 角色买不到食物：社会层缺货是事实，人物的饥渴归《生存需求与环境》，不直接跳成伤病；
+12. 长期缺粮：生存层的匮乏持续足够久，身体后果由《身体状态核心》承接；
+13. 本包不保存任何人物的“当前饥饿值”；
+14. 从官仓支取一批粮装车：大账减少、什物出现，两边对应，不双算；
+15. 什物存回仓库：大账相应增加，同一批物资不同时占两本账；
+16. 政治层免税令合法成立：地方执行可能打折扣，实际减负几何由治理执行能力决定；
+17. 经济治理的技艺造诣：记在人物能力上，本包不另存一份；
+18. 隐匿的粮仓：不进入任何玩家可见的账，直到被合法渠道发现；
+19. 读档后：库存、税赋、工程回到存档时的状态，不重复结算；
+20. 钱粮与治理不拥有自己的独立呈现界面——它们作为势力政务的一部分被玩家感知。
 
 ---
 
-# 12. Politics Integration
-
-Politics 提供：
-
-- Authority；
-- Political Control；
-- Office / jurisdiction；
-- tax / requisition decision；
-- public policy。
-
-Economy 决定：
-
-- 是否执行到位；
-- 收入多少；
-- 实际资源移动；
-- 地方长期后果。
-
-政治命令成立：
-
-> 不等于经济结果自动成立。
-
----
-
-# 13. History Integration
-
-Economy 输出高影响 Event：
-
-- Tuntian established；
-- Famine / shortage；
-- Major displacement；
-- Economic collapse；
-- Major recovery；
-- Large public works；
-- Tax / extraction crisis。
-
-History：
-
-> 只做 Original History Reference 重评估。
-
----
-
-# 14. Information Boundary
-
-玩家可见精度必须服从 Knowledge。
-
-世界真实：
-
-> 某仓有 82,413 斛。
-
-玩家只掌握粗账：
-
-> UI 可以显示“约八万斛 / 储备充足”。
-
-隐藏私人仓库、远方真实库存、秘密截留：
-
-> 不发送浏览器。
-
----
-
-# 15. G8 UI Contribution
-
-本包：
-
-> **不拥有新的一级 Extension Surface。**
-
-它向 Politics 拥有的：
-
-> `势力 / 政务`
-
-贡献二级 View / Section：
-
-```text
-势力 / 政务
-├─ 财赋
-├─ 民生
-└─ 工程
-```
-
-还可以贡献：
-
-### 地图
-
-- production overlay；
-- shortage；
-- transport；
-- infrastructure。
-
-### Place / Region Detail
-
-- local economy；
-- market；
-- livelihood；
-- infrastructure。
-
-### 物品
-
-- bulk storage / item bridge 的玩家安全引用。
-
-### Player Character Detail
-
-- personal economy summary。
-
-Host 仍拥有：
-
-- layout；
-- responsive；
-- safety；
-- accessibility。
-
----
-
-# 16. Save / Restore
-
-必须恢复：
-
-- Treasury；
-- Bulk Stocks；
-- Production；
-- Demographic；
-- Labor；
-- Governance Execution；
-- Public Burden；
-- Livelihood；
-- Market；
-- Infrastructure；
-- Public Works；
-- Bulk Transport；
-- related Event / Knowledge；
-- Resource↔Item bridge committed boundary。
-
-读档后不得：
-
-- 重复收税；
-- 重复发放赈粮；
-- 重复物化库存；
-- 用新历史资料覆盖旧经济状态。
-
----
-
-# 17. Standard Regression Scenarios｜20
-
-1. 正常小额买粮无需 Dice；
-2. 有钱但本地无粮不能瞬间买到；
-3. 皇帝亲自卖粮允许但产生时间 /职责 /社会上下文；
-4. 无 Authority 不能合法调官仓，但可尝试偷 /骗 /强取；
-5. 开仓赈济真实减少库存；
-6. 极端征税可执行但提高负担与长期风险；
-7. 屯田不是即时产粮；
-8. 过重徭役降低 Labor Availability；
-9. War 破坏水利后 Productive Capacity 下降；
-10. 战争结束不自动恢复；
-11. 角色买不到食物 → Survival Need，不直接 Health；
-12. Survival 缺食长期化 → Health Condition；
-13. Economy 不保存 Character Hunger；
-14. Bulk Stock 物化为 Item 必须原子扣减；
-15. Item 存回仓库不能双算库存；
-16. Politics 免税命令合法，但地方执行可能不完全；
-17. Economy Skill mastery 只在 EP-CHAR-CORE；
-18. 隐藏粮仓不泄露；
-19. Save / Restore 不重复资源事务；
-20. Economy 内容只 contribute `势力 / 政务`，不重复 owns 一级 Surface。
-
----
-
-# 18. Host Requirements
-
-| 能力 | 级别 |
-|---|---|
-| Located Bulk Resource | 必需 |
-| Resource ↔ Item bridge | 必需于高精度库存 |
-| World Time / Timed Process | 必需 |
-| Region / Place binding | 必需 |
-| Production / Infrastructure persistence | 必需 |
-| Demographic / Labor | 必需 |
-| Politics Authority read | Governance 路径必需 |
-| EP-CHAR-CORE Skill query | 推荐 |
-| Survival Resource availability handoff | 推荐 |
-| War resource consume / damage handoff | 完整战争必需 |
-| Knowledge-safe projection | 必需 |
-| Atomic Commit / idempotency | 必需 |
-| Save / Restore | 必需 |
-| Surface Contribution | 推荐 |
-
----
-
-# 19. Creator / G9 Requirements
-
-未来需要声明式支持：
-
-- Bulk Resource；
-- Storage Context；
-- Timed Production；
-- Population / Labor；
-- Governance Execution；
-- Market Condition；
-- Public Burden / Livelihood；
-- Infrastructure；
-- Resource ↔ Item bridge；
-- Politics Authority dependency；
-- War consume / damage interface；
-- Survival availability handoff；
-- Economy Skill contribution；
-- `势力 / 政务` Surface contribution。
-
-禁止任意 JS 经济公式。
-
----
-
-# 20. Migration From v0.1.3
-
-## 保留
-
-- Treasury / Grain；
-- Productive Capacity；
-- Demographic / Labor；
-- Market；
-- Public Burden / Livelihood；
-- Infrastructure；
-- Tuntian；
-- Relief；
-- Tax / Corvee；
-- Bulk Transport；
-- Open Attempt。
-
-## 重构
-
-- Administrative Reach → Local Governance Execution Capacity；
-- Character Skill → EP-CHAR-CORE；
-- Survival old interface → Economy → Survival → Health；
-- War supply interface → new War v0.2；
-- UI → contribute Politics Surface；
-- Resource / Item 双轨 → bridge contract。
-
-## 删除
-
-- 任何个人 Physical Fatigue / Injury / Disease / Recovery Ownership；
-- 旧三国人物能力包 dependency；
-- Economy 自己维护 Character “治理能力”的可能性。
-
----
-
-# 21. Final Freeze
-
-> **Economy 拥有社会和地方层钱粮、生产、人口、劳力、市场、行政执行、工程与民生。**
+> **经济拥有社会与地方层的钱粮、生产、人口、劳力、市场、行政执行、工程与民生。**
 >
-> **Survival 拥有 Character 生存需求；Health 拥有身体结果。**
+> **人物生存需求归生存，身体后果归身体——地区饥荒不等于某个人在挨饿。**
 >
-> **Politics 决定有没有权；Character Core 决定人物会不会做；Economy 决定组织和资源实际能不能做到。**
+> **政治决定有没有权，人物能力决定会不会做，经济决定组织与资源实际做不做得到。**
 >
-> **War 消费 Economy 的真实资源，不复制军粮。**
+> **军队消耗经济的真实资源，不复制第二份军粮。**
 >
-> **Bulk Resource 与 Item / Placement 必须通过原子桥接，不允许双库存。**
->
-> **本包只 contribute `势力 / 政务`，不拥有第二个一级 Economy Surface。**
+> **大宗库存与具体什物是一本账的两面，不允许双算。**
+
+---
+
+## Revision Notes
+
+v0.2（DSH-native 迁移）
+
+- 移除第二版 Runtime 专属结构与机器协议语言；
+- 改写为面向 GM 的纯资产文档；
+- 保留玩法机制与裁定参考深度。

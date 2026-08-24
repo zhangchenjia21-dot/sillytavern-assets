@@ -5,938 +5,407 @@ aliases:
   - 汉末三国军事拓展包
   - Han Late Three Kingdoms Warfare Expansion
 created: 2026-08-16
-updated: 2026-08-16
+updated: 2026-08-24
 status: candidate
 version: 0.2
-workflow_mode: light-asset
-operation_mode: major-rewrite
 asset_type: expansion-pack
-output_profile: obsidian-markdown
 asset_family: 汉末三国：天下未定
-world_pack: "[[汉末三国_天下未定_World_Pack_v0.2.2]]"
-politics_expansion: "[[汉末三国_政争与势力_Expansion_Pack_v0.2.1]]"
-economy_expansion: "[[汉末三国_财赋与治理_Expansion_Pack_v0.2]]"
-combat_core: "[[战斗核心_Expansion_Pack_v0.1]]"
-health_core: "[[身体状态核心_Expansion_Pack_v0.1]]"
-survival_expansion: "[[生存需求与环境_Expansion_Pack_v0.2]]"
-character_core: "[[人物能力与技艺_Expansion_Pack_v0.1.5]]"
-history_expansion: "[[汉末三国_历史参照与分歧_Expansion_Pack_v0.2]]"
-hard_dependencies:
-  - "[[战斗核心_Expansion_Pack_v0.1]]"
-  - "[[身体状态核心_Expansion_Pack_v0.1]]"
-  - "[[汉末三国_政争与势力_Expansion_Pack_v0.2.1]]"
-  - "[[汉末三国_财赋与治理_Expansion_Pack_v0.2]]"
-creator_binding: pending
-asset_spec_binding: pending
-runtime_asset: true
+world_pack: "[[汉末三国_天下未定_World_Pack_v0.2.3]]"
 language: zh-CN
 tags:
   - 三国
   - ExpansionPack
   - 战争
   - 军略
-  - Formation
-  - Campaign
-  - Command
-  - WarFog
-  - Siege
-  - Naval
+  - 军队
+  - 战役
+  - 军令
+  - 军情
+  - 围城
+  - 水战
 ---
 
 # 汉末三国：军略与战争｜Expansion Pack v0.2
 
 > [!abstract] 一句话定位
-> **本包拥有大于“直接个人战斗”的汉末三国战争层：Formation、指挥链、军令传播、战争迷雾、行军、战役、部队战斗、围城、水战、士气、组织、作战疲劳、补给状态、伤亡汇总与军事占领。**
+> **把大于“个人贴身打斗”的汉末战争——军队编制、指挥链、军令传播、战争迷雾、行军、战役、会战、围城、水战、士气与凝聚力、作战疲劳、补给、伤亡与军事占领——变成一套持续的、有分量的游戏机制。**
 >
-> 当战争缩小到具体 Character / 小规模直接交手时：
+> 本包回答的问题是：
 >
-> **交给 `EP-COMBAT-CORE`。**
+> **“仗怎么打？军队怎样行动、坚持和崩溃？战争怎样真实地改变世界？”**
 >
-> 当 Character 受到持续身体后果时：
->
-> **交给 `EP-HEALTH-CORE`。**
-
-> [!important] v0.2 是 Major Rewrite
-> 旧 v0.1.1 的高层 War 结构继续保留，但以下 Ownership 正式剥离：
->
-> - Character-scale Personal Combat → Combat Core；
-> - Character Injury / Incapacitation / Physical Fatigue → Health Core；
-> - Character Nutrition / Hydration / Sleep → Survival；
-> - Character Skill mastery → EP-CHAR-CORE。
->
-> 同时：
->
-> - `Engagement` 改为 `Formation Battle`，避免与 Combat Engagement 冲突；
-> - `Fatigue` 改为 `Formation Operational Fatigue`；
-> - 命令 /军权与新版 Politics 对接；
-> - Supply 与新版 Economy 对接；
-> - 本包正式请求 `军略 / 战争` 一级 Extension Surface。
+> 它不拥有个人之间的贴身战斗，不拥有人物身体的伤势与死亡，也不替政治决定战争的目标与投降条件。
 
 ---
 
-# 1. Scale Boundary｜战争层与战斗层
+# 1. 这个包为游戏增加什么
 
-## 1.1 War owns
+装上这个包，战争从“一段分出胜负的对话”变成一个真实运转的军事世界：
 
-- War Theater / Conflict；
-- Campaign；
-- Military Formation；
-- Command Chain；
-- Military Order；
-- Order Transmission；
-- Military Intelligence Process；
-- March；
-- Formation Battle；
-- Siege；
-- Naval / Riverine Operation；
-- Formation Strength / Composition；
-- Training / Discipline；
-- Cohesion；
-- Morale；
-- Formation Operational Fatigue；
-- Readiness；
-- Supply Condition；
-- Formation casualties / captured / missing aggregate；
-- Military Occupation；
-- Local-to-Formation / Campaign propagation。
+- 战争不再是一次判定定输赢。一支军队要集结、要行军、要吃粮、要休息；命令要传达，情报要侦察，城墙要一段一段地啃；
+- 军队是有状态的组织。兵力、兵种、训练、凝聚力、士气、疲劳、战备、补给——每一支部队都有自己的处境，会溃散、会逃亡、会断粮、会在主将倒下时动摇；
+- 军令有真实的生命周期。发出不等于送达，送达不等于执行；将领不是棋子，命令过时、敌情已变时，他们会按自己的判断调整；
+- 信息是稀缺的。玩家只能知道自己有合法渠道知道的军情——斥候看到了什么、战报什么时候送到、俘虏说了什么。地图上不会平白长出敌军的精确兵力；
+- 个人武勇与大军战局分层。名将冲阵、单骑救主是真实的局部事件，但它要改变整场会战，需要一条真实的传播链；
+- 战争的后果流向其它领域：占领的土地交给政治去接管，消耗的粮草交给经济去结账，阵亡的将领留给世界去哀悼。
 
-## 1.2 Combat Core owns
+# 2. 它关注什么、引入什么因果逻辑
 
-- Character-scale direct combat；
-- Combat Engagement；
-- Threat；
-- Range；
-- Reaction Window；
-- Martial Action；
-- Martial Outcome；
-- Combat Consequence；
-- direct Physical Impact Event。
+本包关注**军队层与战役层的军事事实**：部队、指挥、命令、情报、机动、交战、占领。
 
-## 1.3 Health owns
+它引入的核心因果逻辑是：
 
-对已实例化 Character：
+- 军事效果通过**真实的组织过程**发生：命令要传达，部队要移动，粮食要运到，城要围上。没有谁挥一挥手，万人大军就出现在百里之外；
+- 军事行动**消耗真实的东西**：时间、补给、疲劳、凝聚力。强行军可以更快，代价是掉队、疲惫和士气风险；
+- 交战是一个**多阶段的过程**，不是一次掷骰。条件清楚的地方直接得出确定结果；偶然性只留给真正不确定的局部节点；
+- 局部事件只有存在**真实的传播链**才影响全局——“谁看见了、消息怎么传、部队当前什么状态”都是链条上的环节；
+- 战争**不自己创造资源**：军队吃的每一粒粮都来自经济的真实库存；战争造成的每一处破坏都真实写入世界。
 
-- Injury；
-- Blood Loss；
-- Pain；
-- Physical Fatigue / Weakness；
-- Consciousness；
-- HP；
-- Treatment / Recovery；
-- bodily death state。
+# 3. 战争层与个人战斗的边界
 
-## 1.4 Survival owns
+本包只管大于个人打斗的层级。当镜头缩小到具体人物的直接交手：
 
-对已实例化 Character：
+- 武将单挑、小队突袭、贴身搏杀、城门处的殊死争夺——归《战斗核心》；
+- 人物受伤、失血、昏迷、死亡的身体过程——归《身体状态核心》；
+- 人物的饥饿、口渴、睡眠与生存负荷——归《生存需求与环境》。
 
-- Nutrition；
-- Hydration；
-- Sleep Need；
-- Survival Load / Exposure。
-
----
-
-# 2. Ownership Map
-
-| 概念 | Owner |
-|---|---|
-| Character Capability | EP-CHAR-CORE |
-| Direct Combat | EP-COMBAT-CORE |
-| Character Health | EP-HEALTH-CORE |
-| Character Survival Need | EP-SURVIVAL |
-| Political Authority / Affiliation / Control | 政争与势力 |
-| Grain / Treasury / transport / population source | 财赋与治理 |
-| Formation / Campaign / Command / War Fog | 本 Expansion |
-| Military Occupation | 本 Expansion |
-| Political Control after occupation | Politics |
-| Historical Reference | 历史参照与分歧 |
-| Formal Outcome / Atomic Commit | Runtime |
-
----
-
-# 3. War Skill Contribution
-
-本包向 EP-CHAR-CORE 贡献六项 Skill Definition：
-
-- **骑术**
-- **统兵**
-- **军阵**
-- **军略**
-- **侦察与军情**
-- **军需组织**
-
-不再定义：
-
-- 长兵；
-- 短兵；
-- 射术；
-- 徒手；
-- 战术。
-
-这些直接复用 Combat Core：
-
-- 近战兵器；
-- 远程兵器；
-- 徒手格斗；
-- 战术判断。
-
-## 军略 vs 战术判断
-
-`战术判断`：
-
-> 当前直接 Combat / 局部战斗中的战术判断。
-
-`军略`：
-
-> Campaign / War Theater 层的长期军事目标、力量配置与战役规划。
-
----
-
-# 4. Three War Layers
-
-## 4.1 War Theater / Conflict
-
-长期、大范围军事冲突。
-
-记录：
-
-- 参与政治主体；
-- 主要军事目标；
-- 战线；
-- 活跃 Campaign。
-
-政治敌对关系本身仍来自 Politics。
-
-## 4.2 Campaign
-
-围绕明确军事目标持续数日到数月：
-
-- 攻取区域；
-- 解围；
-- 保护运输线；
-- 夺取渡口；
-- 围城；
-- 防御；
-- 撤退。
-
-## 4.3 Formation Battle
-
-Formation 之间已经形成实际军事接触的持续战斗状态。
-
-它可以包含：
-
-- 多个局部 Combat Context；
-- 阵位变化；
-- 士气 / Cohesion 更新；
-- 撤退 /增援；
-- Character direct combat。
-
-`Formation Battle` 不等于 Combat Core 的 `Combat Engagement`。
-
----
-
-# 5. Formation State
-
-## 5.1 Strength
-
-区分：
-
-- present；
-- combat-capable；
-- wounded / unavailable aggregate；
-- missing；
-- captured；
-- dead；
-- deserted / detached。
-
-匿名兵员可以 aggregate。
-
-已实例化 Character：
-
-> 身体事实归 Health。
-
-## 5.2 Composition
-
-高层兵种 / 功能组成：
-
-- infantry；
-- cavalry；
-- ranged；
-- naval；
-- engineer / logistics；
-- world-defined categories。
-
-## 5.3 Training / Discipline
-
-Formation 整体组织训练。
-
-不是 Character Skill 平均值。
-
-## 5.4 Cohesion
-
-部队还能否：
-
-- 保持编成；
-- 接收命令；
-- 协同行动。
-
-与 Morale 分离。
-
-## 5.5 Morale
-
-部队集体继续承担军事风险的心理状态。
-
-不等于：
-
--私人忠诚；
-- Political Affiliation。
-
-## 5.6 Formation Operational Fatigue
-
-表示：
-
-> **部队整体在行军、连续作战、缺乏轮换和供应压力下的作战疲劳。**
-
-它是 Formation-level operational state。
-
-不等于：
-
-> Character Physical Fatigue。
-
-Named Character 的疲劳由 Survival / Health 正式处理。
-
-## 5.7 Readiness
-
-装备、集结、警戒、部署和当前可作战准备状态的军事摘要。
-
-## 5.8 Supply Condition
-
-由 Economy 的：
-
-- Grain；
-- transport；
-- material；
-- finance；
-
-派生为战争层：
-
-- sufficient；
-- strained；
-- critical；
-- cut off。
-
-它不是第二粮食库存。
-
----
-
-# 6. Command / Order
-
-## 6.1 Command Chain
-
-Politics 提供：
-
-> 正式军权 / Affiliation / Authority。
-
-War 保存：
-
-> 当前实际军事指挥链、代理和失联状态。
-
-## 6.2 Military Order
-
-至少语义上保存：
-
-- sender；
-- recipient；
-- issued time / place；
-- intent；
-- objective；
-- validity condition；
-- transmission state；
-- execution state。
-
-## 6.3 Order lifecycle
+本包与这些层级的衔接方式是**读取结果、传播军事后果**，而不是重做个人裁定。例如：
 
 ```text
-issued
-→ in transit
-→ delivered
-→ interpreted
-→ executing / adjusted / refused / impossible
-→ completed / failed / superseded
+敌军主将在局部交手中被判定俘获（《战斗核心》的事）
+        ↓
+本包读取这个事实：指挥中断
+        ↓
+凝聚力与士气面临动摇，会战态势可能改变
 ```
 
-命令发出：
+反过来，会战提供的战场与阵位背景，是局部交手发生的舞台。两层各司其职。
 
-> 不等于部队已经移动。
+# 4. 三个战争层次
 
-## 6.4 NPC autonomy
+## 4.1 战区／冲突
 
-下属不是 RTS 单位。
+长期、大范围的军事对抗。追踪：参与的政治主体、主要军事目标、战线、进行中的战役。政治上的敌对关系本身来自《政争与势力》——本包不决定谁和谁开战，只承载开战之后的军事现实。
 
-在：
+## 4.2 战役
 
-- 命令过时；
-- 信息改变；
--目标已不可能；
-- 通信中断；
-- 新生死风险；
+围绕明确军事目标持续数日到数月的行动：攻取区域、解围、保护运输线、夺取渡口、围城、防御、撤退。一场战役由行军、遭遇、会战、围城等具体过程组成。
 
-等情况下，可基于 Character Definition + Duty + current knowledge 合理调整。
+## 4.3 会战
 
----
+部队之间已经形成实际军事接触的持续战斗状态。它可以包含：多处局部交手、阵位变化、士气与凝聚力的消长、撤退与增援的抉择、以及卷入其中的个人战斗。会战是军队层的状态，不等于任何一次个人交锋。
 
-# 7. War Fog / Military Knowledge
+# 5. 军队状态
 
-Military truth 与 Player Knowledge 分开。
+一支部队（从数百人的部曲到数万人的大军）是持续存在的军事组织，本包追踪它的以下状态。这些是语义区分，帮助 GM 把军队想清楚，不是必须逐项填表的账本。
 
-玩家只能通过：
+## 5.1 兵力
 
-- direct observation；
-- scout；
-- messenger；
-- report；
-- prisoner；
-- ally；
-- local source；
+区分：在营人数、可战人数、伤损无法作战者、失踪者、被俘者、阵亡者、逃亡与离散者。匿名兵员按汇总数字追踪即可，不要求十万士卒各有一份身体档案；有名人物的身体事实归《身体状态核心》。
 
-获得军情。
+## 5.2 兵种构成
 
-军情需要：
+高层兵种与功能组成：步兵、骑兵、弓弩、水军、工兵与辎重，以及世界定义的特殊部类。构成决定一支部队能做什么——没有水军训练的步卒登上战船，在水战中要付出代价。
 
-- source；
-- observed time；
-- received time；
-- confidence；
-- staleness；
-- contradiction。
+## 5.3 训练与纪律
 
-UI 不默认显示：
+部队整体的组织化训练水平。它是军队的属性，不是成员个人技艺的平均值：一群个个骁勇的豪侠凑在一起，不等于一支令行禁止的军队。
 
-> 后台精确敌军、士气、伏兵、粮食。
+## 5.4 凝聚力
 
----
+部队还能否保持编成、接收命令、协同行动。凝聚力与士气分开：一支士气高昂但建制被打散的部队，依然无法执行协同行动。
 
-# 8. March / Operational Movement
+## 5.5 士气
 
-Formation 移动考虑：
+部队集体继续承担军事风险的心理状态。士气不等于私人忠诚，也不等于政治归属——士兵可以为并不热爱的政权死战，也可以为爱戴的将领溃逃。
 
-- Region / Place / route；
-- distance；
-- terrain；
-- weather；
-- Formation size；
-- baggage；
-- Supply；
-- Operational Fatigue；
-- Cohesion；
-- scouting；
-- enemy pressure。
+## 5.6 作战疲劳
 
-大军：
+部队整体在行军、连续作战、缺乏轮换和供应压力下积累的疲劳。它是军队层的作战状态，不等于某个角色的身体疲劳——有名人物的疲劳由《生存需求与环境》与《身体状态核心》承载。如果同时启用那些玩法，本包中的伤亡与疲劳会在人物身上获得更细致的表现。
 
-> 不瞬移、不瞬间转向、不瞬间渡河。
+## 5.7 战备
 
-强行军：
+装备、集结、警戒、部署与当前可作战状态的军事摘要。一支兵力雄厚但分散驻扎、甲胄在库的部队，遭遇突袭时并不“可战”。
 
-> 用更高 Operational Fatigue / Cohesion / straggler risk 换速度。
+## 5.8 补给状况
 
-对于 Player / named Character 的生存负荷：
+从经济的真实库存与运输状况读出的军队补给水平：充足、紧张、危急、断绝。它不是军队私有的第二本军粮账——国库充盈而运粮道被切断的前线，照样断粮。
 
-> 可额外 Handoff Survival。
+# 6. 指挥与军令
 
----
+## 6.1 指挥链
 
-# 9. Direct Combat Invocation
+《政争与势力》提供正式的军权、归属与授权；本包保存**当前实际的军事指挥链**：谁实际指挥谁、谁在代理、谁已经失联。正式的统帅远在后方、前线由副将实际做主，是战争的常态。
 
-当 Formation Battle 中出现：
+## 6.2 军令
 
-- 武将冲阵；
-- 城门争夺；
-- 单挑；
-- 小队突击；
-- 护卫；
-- Character 被近身攻击；
+一道军令至少包含：发令者、受令者、发出的时间与地点、意图、目标、有效条件、传达状态、执行状态。
 
-正确链：
+## 6.3 军令的生命周期
 
 ```text
-War:
-Battlefield / Formation Context
-↓
-Combat Core:
-direct combat
-↓
-Combat Consequence
-↓
-Health:
-bodily consequence if any
-↓
-War:
-propagate only military-relevant consequence
+发出 → 传达中 → 送达 → 理解
+→ 执行 / 调整 / 拒绝 / 无法执行
+→ 完成 / 失败 / 被新令取代
 ```
 
-例如：
+命令发出不等于部队已经移动。一道三天前发出的“坚守待援”，送达时援军可能已经不存在了。
+
+## 6.4 下属的自主性
+
+下属不是即时战略游戏里的单位。在命令过时、信息已变、目标已不可能、通信中断、出现新生死风险等情况下，将领会基于自己的人格、职责与当下所知，合理地调整、拖延甚至拒绝执行。违令与抗命是真实的军事与政治事件，会产生真实后果——这正是乱世军事戏的好材料。
+
+# 7. 战争迷雾与军情
+
+军事真相与玩家知识分开。玩家只能通过合法渠道获得军情：
+
+- 亲眼观察；
+- 斥候与侦骑；
+- 信使与战报；
+- 俘虏口供；
+- 盟军通报；
+- 当地眼线与传闻。
+
+每条军情都有：来源、观察时间、收到时间、可信度、时效性，以及与其它情报的矛盾。三天前“敌军主力在北岸”的报告，今天可能已经完全过时；两份互相矛盾的侦察报告并存，不静默地互相覆盖——把矛盾呈现给玩家，让他们自己判断。
+
+玩家默认看不到：敌军的精确兵力、真实士气、伏兵位置、仓里还剩多少粮。这些是世界的事实，不是玩家的界面。
+
+# 8. 行军
+
+部队机动要考虑：区域与路线、距离、地形、天气、部队规模、辎重、补给、作战疲劳、凝聚力、侦察与敌方压力。
+
+大军不瞬移、不瞬间转向、不瞬间渡河。一支带足辎重的两万人的军队日行数十里，遇到江河要搜集船只、分批渡涉——这些时间与脆弱性都是真实的军事事实，是袭击、拦截与战机存在的原因。
+
+强行军：用更高的作战疲劳、凝聚力损耗与掉队风险换速度。值不值得，是指挥官的抉择。行军中有名人物的生存负荷（饥渴、露宿、伤病）由《生存需求与环境》承载。
+
+# 9. 会战如何裁定
+
+大型部队交战不是一次掷骰定胜负。一场会战至少经历：
 
 ```text
-敌军主将被 Combat Core 判定俘获
-↓
-War:
-Command State disrupted
-↓
-Cohesion / Morale may change
+接触
+→ 部署与初始态势
+→ 关键部队行动
+→ 各处局部交手的后果
+→ 伤亡、凝聚力、士气更新
+→ 增援 / 撤退 / 追击的抉择
+→ 会战结束
 ```
 
-War 不重做：
+裁定原则：
 
-> Personal Combat Resolution。
+- 条件清楚的地方直接得出确定结果。被十倍兵力合围、粮尽援绝的孤军不需要“五五开”的骰子来决定它能否突围；
+- 偶然性只用于：状态与规则都处理完之后仍真正不确定、且多种结果都说得通的局部节点；
+- 战争的质感来自因果链条的展开，而不是随机数的堆叠。
 
----
+# 10. 个人武勇与战局的传播
 
-# 10. Casualty / Health Boundary
+局部成功只有存在实际传播链，才影响会战与战役。例如：
 
-## 10.1 Anonymous aggregate personnel
-
-War 可以保存：
-
-- killed aggregate；
-- wounded / unavailable aggregate；
-- captured；
-- missing；
-- deserted。
-
-不要求十万士卒拥有 Health Profile。
-
-## 10.2 Named Character
-
-如果一个正式 Character 受伤：
+**主将被俘：**
 
 ```text
-Combat / War Physical Impact
-↓
-EP-HEALTH-CORE
+局部交手判定主将被俘
+→ 指挥中断
+→ 凝聚力风险
+→ 可能影响会战走向
 ```
 
-War 读取：
+主将被俘不必然全军投降——有准备的部队由副将接管，凝聚力强的部队且战且退，都完全合理。
 
-- can fight；
-- can command；
-- unconscious；
-- dead；
-
-等合法身体结果。
-
-War 不保存第二 Injury。
-
----
-
-# 11. Economy Integration
-
-Economy 是 War 持续运行的正式 Supply Provider。
-
-## Economy → War
-
-- Grain；
-- Treasury；
-- material；
-- transport；
-- recruitment population / labor context；
-- infrastructure。
-
-## War → Economy
-
-- resource consumption；
-- requisition；
-- storage loss；
-- infrastructure damage；
-- population casualties / displacement；
-- route interruption。
-
-War 不允许：
-
-> `armyFood` 独立于 Economy 真值。
-
----
-
-# 12. Politics Integration
-
-Politics 提供：
-
-- Military Authority；
-- Affiliation；
-- Alliance / Hostility；
-- political war objective；
-- surrender / armistice terms。
-
-War 提供：
-
-- Military Occupation；
-- Campaign result；
-- commander captured / killed；
-- formation collapse；
-- military surrender。
-
-Military Occupation：
-
-> 不自动成为 Political Control。
-
----
-
-# 13. Formation Battle Resolution
-
-大型部队战斗：
-
-> 不是一次 d20。
-
-至少经历：
+**城门被夺：**
 
 ```text
-contact
-↓
-deployment / initial situation
-↓
-key formation actions
-↓
-local Combat consequences
-↓
-loss / Cohesion / Morale update
-↓
-reinforcement / retreat / pursuit choices
-↓
-battle conclusion
+局部交手改变城门控制权
+→ 友军进入成为可能
+→ 部队阵地变化
+→ 围城态势改变
 ```
 
-Dice 只解决：
+**士气事件**要考虑：谁看见了、消息是否传播、主将的声望、部队当前的士气与凝聚力。不允许“名将阵前斩杀一人，敌军万人士气立溃”式的直接扣减——真实的效果是：亲眼目睹的前锋动摇了，消息传开的营垒窃窃私语了，而毫不知情的中军还在原地待命。
 
-> 状态和规则处理后仍真正不确定的局部节点。
+# 11. 伤亡：汇总与个人
 
----
+- **匿名兵员**：按汇总追踪阵亡、伤损、被俘、失踪、逃亡。这些数字是真实的军事与经济事实——它们减少兵力，也减少故乡的劳力；
+- **有名人物**：受伤、昏迷、死亡的身体过程由《身体状态核心》承载。本包只读取其军事相关结果：能否作战、能否指挥、是否昏迷、是否死亡，并据此调整指挥链与部队状态。玩家角色可以在战争中真实死亡。
 
-# 14. Local-to-Higher Propagation
+# 12. 围城与水战
 
-局部成功只有存在实际传播链才影响 Formation / Campaign。
+## 12.1 围城
 
-例如：
+围城是长期战役过程，持续读取：守军状态、城防工事、双方补给、城中经济、士气、疫病与身体状况、援军动向、攻城工程、时间。围城的本质是消耗与等待的竞赛——谁先在粮食、士气或援军上输掉，谁就输掉城池。
 
-## Commander captured
+强攻不是一骰破城：它是一场会战加上城墙、城门、云梯处的多处局部交手，每一步都按第 9、10 节的方式裁定。
+
+## 12.2 水战与江河作战
+
+水战复用军队、指挥、士气、凝聚力的全部机制，额外读取：船只与运输资源、水道、水流、风向、接舷战、水军训练、火攻条件。不习水战的北方步卒在颠簸的战船上战斗力大打折扣；一场东南风可以改变整场战役——但它改变的方式是通过火攻条件与船只机动这些真实的军事事实，而不是“剧情需要”。
+
+# 13. 撤退与追击
+
+撤退区分四种：有序撤退、且战且退、混乱、溃败。能打出哪种撤退，取决于凝聚力、指挥、疲劳与敌情——一支训练有素的部队可以交替掩护全身而退，一支新募之众可能一转身就变成溃逃。
+
+追击需要：自身的凝聚力与余力、情报、路线、指挥。追击不是免费追加伤害——追入预设的伏击圈，追击者就成了被歼者。
+
+# 14. 开放尝试：军权约束效果，不约束行动
+
+本包遵守与政治层相同的原则：**军权约束正式军事效果，但不删除任何人的尝试。**
+
+普通士卒可以大喊“全军撤退！”——尝试真实发生了，但他没有正式军权：有没有人跟着跑、会不会引发局部动摇、事后会不会被军法处置，由世界按逻辑裁定。
+
+同样，假传军令、砸锅毁灶、破坏桥梁、私自袭营、强行冲阵，都不因为“不在行为清单上”而被禁止。伪造的军令可能被相信，但伪造者不因此获得合法军权；一旦被识破，矫令本身就是罪证。乱世的军事史，一半是写在命令簿之外的。
+
+# 15. 军事占领与政治控制
+
+军队打下一片土地，产生的是**军事占领**——这是本包追踪的军事事实。但：
 
 ```text
-Combat Outcome
-→ commander captured
-→ Command State disruption
-→ Cohesion risk
-→ possible Formation Battle effect
+军事占领 ≠ 政治控制
 ```
 
-## Gate opened
+占领之后是否建立行政接管、能否征税派役、当地居民是否服从、各方是否承认，由政治过程单独决定（见《政争与势力》）。地图上插了旗子的地方、名义上归属的地方、实际能收到粮的地方，可以是三回事。
 
-```text
-Combat Outcome
-→ gate access changes
-→ friendly movement becomes possible
-→ Formation position changes
-→ Siege / Battle situation changes
-```
+# 16. 人物能力与军事
 
-## Morale event
+本包为人物能力体系（《人物能力与技艺》）提供军事领域的技艺语义，人物在这些领域的造诣高低由能力机制统一承载。本包定义的军事相关技艺领域：
 
-必须考虑：
+- **骑术**；
+- **统兵**：组织、训练、节制部队；
+- **军阵**：阵法、部署、会战指挥；
+- **军略**：战区与战役层的长期军事目标、力量配置与战役规划；
+- **侦察与军情**：获取、判读、传递军事情报；
+- **军需组织**：粮秣、辎重、运输与补给的军事化组织。
 
-- 谁看见；
-- 消息是否传播；
-- leader reputation；
-- current Morale / Cohesion。
+近身兵刃、射术、徒手与临阵的战术判断等个人武技，语义由《战斗核心》定义，本包不重复定义。**军略**与**战术判断**的区别在于层级：前者经营数月数千里的大局，后者解决眼前这一仗。
 
-不允许：
+能力不能强制军事结果：军略再高的统帅也不能让断粮的军队不挨饿，不能让命令飞越千里即刻抵达，更不能让敌军在条件不具备时凭空溃败。能力影响的是真实可改变空间内的执行质量——部署更巧、战机抓得更准、粮道护得更稳。
 
-> “名将杀一人 → 全军 -30 士气”。
+# 17. 与其它拓展的关系
 
----
+**唯一的前提是世界包**：没有“汉末三国：天下未定”的历史舞台、地理与势力，本包的战争机制无从谈起。除此之外，以下都是自然的协同，而非硬性要求——缺了任何一方，本包照常运转，只是对应维度的质感变薄：
 
-# 15. Siege / Naval
+- **《政争与势力》**：正式军权、战争目标、投降与停战的政治条件来自政治；本包向政治反馈军事占领、战役结果、将领存亡与被俘、军事投降。占领不自动变成政治控制；
+- **《财赋与治理》**：军队消耗的粮食、财货、物资、运输力与征发的人口，全部来自经济的真实库存；本包不允许军队拥有独立于经济的第二份军粮。反过来，战争的资源消耗、仓储损失、设施破坏、人口伤亡与流离、路线中断，真实写入经济；
+- **《战斗核心》**：承载个人贴身战斗的裁定（见第 3、10 节）；
+- **《身体状态核心》**：承载有名人物的伤势、昏迷与死亡（见第 11 节）；
+- **《生存需求与环境》**：承载行军与围城中有名人物的生存负荷；
+- **《人物能力与技艺》**：承载人物在统兵、军略等领域的造诣（见第 16 节）。没有它，战争照常运转，只是“名将之能”更依赖叙事呈现；
+- **《历史参照与分歧》**：重大战役结局、占领、关键将领死亡或被俘，会成为历史对照的素材。历史包只读取、绝不回写——T0 之后，不因原历史强制赤壁或官渡的任何结果。
 
-## Siege
+反过来，本包也不会因为某个协同方缺席就自己另建一套对应机制：没有身体状态机制，战争照样打，本包不会自己长出人物伤势系统。
 
-是长期 Campaign / Process，持续读取：
+# 18. 信息边界：谁知道什么
 
-- defender；
-- fortification；
-- Supply；
-- Economy；
-- Morale；
-- disease / Health context；
-- relief army；
-- engineering；
-- time。
+## 18.1 通常可知的
 
-攻城强攻：
+依身份与信息渠道：己方的编制与军令、亲眼所见的战场、按期送达的战报、公开的宣战与投降、盟军按约通报的情报。
 
-> 是 Formation Battle + multiple local Combat Context，不是一骰破城。
+## 18.2 默认隐藏的
 
-## Naval / Riverine
+敌军的精确兵力与部署、真实士气与补给、伏兵与预备队、密道中运送的军令、对方营帐里的谋划，以及——对士兵而言——统帅的全局意图。
 
-继续复用 Formation / Command / Morale / Cohesion。
+## 18.3 世界事实 ≠ 玩家知识
 
-额外读取：
+世界里可以真实存在“敌军一支偏师正在绕向粮道”这样的事实；玩家若没有合法信息来源，就不该知道。NPC 将领同样只按自己知道的信息做军事判断——误判、中伏、后知后觉，都是战争戏的本色。
 
-- ship / transport resource；
-- waterway；
-- current；
-- wind；
-- boarding；
-- naval training；
-- fire conditions。
+# 19. 值得持久化的状态
 
----
+以下军事事实一旦成立，就是游戏世界的持久真相，值得写入游戏工作区并跨会话延续：
 
-# 16. Retreat / Pursuit
+- 各部队及其兵力、兵种构成；
+- 训练与纪律、凝聚力、士气、作战疲劳、战备、补给状况；
+- 指挥链（含代理与失联状态）；
+- 已发出的军令及其传达与执行状态；
+- 各方掌握的军情知识；
+- 进行中的行军、战役、会战；
+- 进行中的围城与水战进程；
+- 军事占领格局；
+- 伤亡、被俘、失踪、逃亡的汇总；
+- 玩家与各方分别知道什么。
 
-撤退区分：
+读档后这些事实原样恢复：不重掷已定的结果，不重复传达已送达的军令，不重复结算已发生的伤亡，不重复扣除已消耗的补给。
 
-- orderly；
-- fighting withdrawal；
-- disorder；
-- rout。
+# 20. 游玩质感
 
-追击需要：
+- **成功的质感**：一场战役的胜利是台阶式的——斥候先摸清了敌情，粮道先保住了，侧翼先迂回到位了，最后才有阵前的决胜。每一步都有名字、有代价、有见证者；
+- **失败的质感**：战败不是“兵力减若干”，而是具体的失去：阵亡的将领、丢掉的辎重、溃散后再也收拢不回来的部曲、被烧毁的粮仓。失败会留下痕迹，被对手记住，也被自己的士兵记住；
+- **推进的质感**：军事进展是空间与组织双重意义上的——一条粮道向前延伸，一座桥头堡被拿下，一支新军训练成军。地图上的每一步推进背后都是后勤与时间的账单；
+- **恶化的质感**：军事恶化通常不是瞬间崩盘而是侵蚀——补给从充足变成紧张再变成危急，逃亡从个例变成风潮，军令送达越来越慢、执行越来越敷衍。GM 应让它以“越来越多的环节开始掉链子”的方式渗漏出来，直到某场会战中凝聚力的最后一根弦崩断。
 
-- Cohesion；
-- Fatigue；
-- information；
-- route；
-- command。
+# 21. 它不拥有什么
 
-不是：
+明确不属于本包的：
 
-> 免费追加伤害。
+- 个人贴身战斗的裁定（《战斗核心》）；
+- 人物的伤势、昏迷、治疗、死亡的身体过程（《身体状态核心》）；
+- 人物的饥饿、口渴、睡眠与生存负荷（《生存需求与环境》）；
+- 人物的技艺造诣与人格（《人物能力与技艺》、人物卡）；
+- 正式军权、战争目标、投降与停战的政治条件、占领后的行政接管（《政争与势力》）；
+- 粮食、财政、物资、人口、运输的经济真值（《财赋与治理》）；
+- 历史参照与分歧（《历史参照与分歧》）；
+- 随机性与任何形式的最终裁定权——本包提供军事逻辑，结果在游戏世界里成立。
 
----
+# 22. 其它包如何充实它
 
-# 17. Open Attempt
+- **《政争与势力》**让战争有政治的目标、名义与后果，让“为何而战”真实可感；
+- **《财赋与治理》**让后勤成为战争的真实维度，让“兵马未动，粮草先行”成为玩法而不是谚语；
+- **《战斗核心》**让战场上的个人英雄时刻有细致的呈现；
+- **《身体状态核心》**与**《生存需求与环境》**让战争在有名人物身上留下真实的身体印记；
+- **《历史参照与分歧》**给重大军事变动提供历史纵深的回响。
 
-普通士卒可以喊：
+这些充实都是锦上添花，不是隐藏的前提：任何一方缺席，本包依然完整可玩；各协同方也无需为了配合本包改变自己的工作方式。
 
-> “全军撤退！”
+# 23. 裁定参考：常见情形
 
-Attempt 成立。
+以下情形供 GM 把握分寸，不是穷举：
 
-但：
-
-- 无正式 Authority；
-- 是否有人听从；
-- 是否引发局部后果；
-
-由世界裁定。
-
-同样：
-
-- 假传军令；
-- 砸锅；
-- 破坏桥梁；
-- 私自袭营；
-- 强行冲阵；
-
-都不因为 Action Registry 缺项被禁止。
-
----
-
-# 18. G8 UI Surface
-
-本包正式请求一级：
-
-> **`军略 / 战争` Extension Surface**
-
-推荐：
-
-```text
-军略 / 战争
-├─ 战争态势
-├─ 战役
-├─ 军队
-├─ 军令
-├─ 军情
-├─ 围城
-└─ 水战（按需）
-```
-
-## Direct Combat UI
-
-Character 当前直接作战：
-
-> 使用 Combat Core 的 Narrative Contextual Surface。
-
-不要把“我正在被长矛刺向胸口”放进战略管理页面。
-
-## Map Overlay
-
-可以贡献：
-
-- known friendly formation；
-- last-known enemy；
-- occupation；
-- campaign route；
-- uncertainty。
-
-不得泄露后台 War Truth。
+1. 普通士卒喊“全军撤退”：尝试成立，无正式军权则不改全军状态，但可能引发局部动摇或军法后果；
+2. 伪造军令：可能被相信并执行，伪造者不获得合法军权；识破后矫令本身成为罪证；
+3. 军令未送达：下属不执行——他们不知道这道命令存在；
+4. 命令送达时已过时：下属按自己的人格、职责与当前所知合理调整；
+5. 军情呈现：只呈现玩家通过合法渠道获得的内容，后台精确敌军状态不泄露；
+6. 两份矛盾的侦察报告：并存呈现，不静默互相覆盖；
+7. 强行军：增加部队作战疲劳、凝聚力损耗与掉队风险；
+8. 有名人物连续熬夜督战：身体后果由《生存需求与环境》与《身体状态核心》承载，本包只读取“能否指挥”；
+9. 国库充盈但运粮道被断：前线补给状况照样是危急或断绝；
+10. 武将冲阵：交给《战斗核心》裁定局部交手，本包只传播军事后果；
+11. 交手中的伤势：归《身体状态核心》，本包不另存一份伤势；
+12. 武将的局部胜利：没有传播链，就不会让万人敌军自动溃败；
+13. 大会战：按多阶段过程裁定，不允许一骰定胜负；
+14. 确定性的绝境（合围、粮尽、援绝）：直接得出确定结果，不强行制造悬念骰；
+15. 下属合理改变过时命令：正常；是否构成违令，看军权、军法与政治上下文；
+16. 公然抗命：产生真实的军事与政治事件，后果照常展开；
+17. 有序撤退：训练与凝聚力足够时可以成功，撤退不等于失败；
+18. 追击：消耗自身凝聚力与余力，需要情报与指挥，不是免费追加伤害；
+19. 围城持续一个月：按守军、补给、士气、援军、工程逐段推进，不简化成一次判定；
+20. 水战：读取船只、水道、水流、风向、水军训练与火攻条件，不套用陆战直觉；
+21. 军事占领：不自动变成政治控制，行政接管由政治过程单独成立；
+22. 主将被俘：指挥中断、凝聚力承压，但不必然全军投降；
+23. 玩家角色可以在战争中真实死亡；伤势与死亡的身体链条由《身体状态核心》承载；
+24. 同一道军令不因重复传达而被执行两次；
+25. 读档后：围城进程、军令状态、军情知识回到存档时的样子，不重复结算；
+26. T0 之后不因原历史强制赤壁、官渡或任何战役的结果——历史只作参照，见《历史参照与分歧》。
 
 ---
 
-# 19. Save / Restore
-
-必须恢复：
-
-- Formation；
-- Strength / Composition；
-- Cohesion / Morale / Operational Fatigue；
-- Readiness / Supply Condition；
-- Command Chain；
-- Orders；
-- military intel knowledge；
-- March / Campaign / Formation Battle；
-- Siege / Naval process；
-- Occupation；
-- casualties aggregate；
-- linked named Character health outcome refs；
-- Event boundary。
-
-Restore：
-
-- 不重掷；
-- 不重复传令；
-- 不重复伤亡；
-- 不重复资源消耗。
-
----
-
-# 20. Standard Regression Scenarios｜26
-
-1. 普通士卒喊全军撤退不会直接改全军状态；
-2. 伪造军令可能被信但不获得合法 Authority；
-3. 正式军令未送达则下属不执行；
-4. 命令到达时过时可自主调整；
-5. 军情只显示玩家已知；
-6. 冲突侦察报告不静默覆盖；
-7. 强行军增加 Formation Operational Fatigue；
-8. named Character 连续熬夜由 Survival/Health 处理；
-9. 钱多但前线断粮仍 Supply critical；
-10. 武将冲阵调用 Combat Core；
-11. Combat 伤势由 Health Core；
-12. 武将局部成功不自动让万人溃败；
-13. 大战不能单骰；
-14. 确定性包围不强制五五开骰；
-15. 下属合理改变过时命令；
-16. 违令产生 War/Politics/Relationship Event；
-17. 有序撤退可成功；
-18. 追击不是免费伤害；
-19. 围城持续一月推进正式 Process；
-20. 水战读取水域 /船只 /训练；
-21. Military Occupation 不自动 Political Control；
-22. 主将被俘不必然全军投降；
-23. Player Character 可真实死亡，但 Health/World OS 决定身体死亡链；
-24. 重复军令提交幂等；
-25. Save / Restore 恢复围城与军令；
-26. T0 后不因现实历史强制赤壁 /官渡 Outcome。
-
----
-
-# 21. Host Requirements
-
-| 能力 | 必需性 |
-|---|---|
-| Persistent Formation | 必需 |
-| Command Chain / Order | 必需 |
-| Timed message transmission | 必需 |
-| NPC autonomous order execution | 必需 |
-| War Fog / Knowledge | 必需 |
-| Combat Core invocation | 必需 |
-| Health Core named-character handoff | 必需 |
-| Politics Authority / Occupation handoff | 必需 |
-| Economy supply / damage handoff | 必需 |
-| Timed March / Campaign | 必需 |
-| Multi-stage Formation Battle | 必需 |
-| Casualty aggregation | 必需 |
-| Atomic Commit / idempotency | 必需 |
-| Save / Restore | 必需 |
-| Extension Surface | 推荐 |
-| Map Overlay | 推荐 |
-| Survival named-character integration | Optional |
-
----
-
-# 22. Creator / G9 Requirements
-
-需要声明式支持：
-
-- Formation；
-- command hierarchy；
-- Order / message；
-- timed movement；
-- Campaign；
-- Formation Battle；
-- Siege；
-- Naval；
-- Morale / Cohesion / Operational Fatigue；
-- Supply Condition；
-- Combat invocation；
-- casualty aggregate；
-- Economy consume / damage；
-- Politics authority / occupation；
-- History Event；
-- War Skill contribution；
-- `军略 / 战争` Surface。
-
-不能允许 War 自建 Combat Engine / Health Engine / Economy ledger。
-
----
-
-# 23. Migration From v0.1.1
-
-## 保留
-
-- 三层战争结构；
-- Formation；
-- Command / Order；
-- Fog of War；
-- March；
-- Campaign；
-- Morale / Cohesion；
-- Siege；
-- Naval；
-- Retreat / Pursuit；
-- Military Occupation；
-- aggregate casualties；
-- Open Attempt。
-
-## 移交
-
-- Personal Combat → Combat Core；
-- Character injury / physical fatigue / incapacitation → Health Core；
-- Character sleep / hunger / hydration → Survival；
-- Character skill state → EP-CHAR-CORE。
-
-## 重命名 / 重构
-
-- Engagement → Formation Battle；
-- Fatigue → Formation Operational Fatigue；
-- 战术 / 长兵 /短兵 /射术不再由 War 定义；
-- War contributes 6 military skills；
-- Supply 绑定 Economy；
-- Command Authority 绑定 Politics；
-- UI owns `军略 / 战争`。
-
----
-
-# 24. Final Freeze
-
-> **War 管军队和战役，Combat 管直接打斗，Health 管身体。**
+> **战争管军队与战役，贴身打斗归战斗，身体后果归身体。**
 >
-> **Formation Operational Fatigue 不等于 Character Physical Fatigue。**
+> **部队作战疲劳不等于人物身体疲劳。**
 >
-> **Formation Battle 不等于 Combat Engagement。**
+> **命令发出不等于送达，送达不等于执行。**
 >
-> **War 只消费 Economy 的真实 Supply，不建第二军粮。**
+> **军队只消耗经济的真实补给，不另建第二本军粮账。**
 >
-> **Military Occupation 不等于 Political Control。**
+> **军事占领不等于政治控制。**
 >
-> **个人武勇先经 Combat 形成局部 Consequence，再由 War 判断是否传播到 Formation / Campaign。**
->
-> **本包拥有“军略 / 战争”一级 Extension Surface；直接战斗继续留在中央 Contextual UI。**
+> **个人武勇先形成局部后果，再经真实传播链影响会战与战役。**
+
+---
+
+## Revision Notes
+
+v0.2（DSH-native 迁移）
+
+- 移除第二版 Runtime 专属结构与机器协议语言；
+- 改写为面向 GM 的纯资产文档；
+- 保留玩法机制与裁定参考深度。
