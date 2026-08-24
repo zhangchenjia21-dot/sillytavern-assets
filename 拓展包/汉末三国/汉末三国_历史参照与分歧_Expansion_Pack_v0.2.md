@@ -5,621 +5,293 @@ aliases:
   - 三国历史分歧机制拓展包
   - Han Late Three Kingdoms Historical Reference and Divergence Expansion
 created: 2026-08-16
-updated: 2026-08-16
+updated: 2026-08-24
 status: candidate
 version: 0.2
-workflow_mode: light-asset
-operation_mode: revise
 asset_type: expansion-pack
-output_profile: obsidian-markdown
 asset_family: 汉末三国：天下未定
-world_pack: "[[汉末三国_天下未定_World_Pack_v0.2.2]]"
-politics_expansion: "[[汉末三国_政争与势力_Expansion_Pack_v0.2.1]]"
-economy_expansion: "[[汉末三国_财赋与治理_Expansion_Pack_v0.2]]"
-war_expansion: "[[汉末三国_军略与战争_Expansion_Pack_v0.2]]"
-character_core: "[[人物能力与技艺_Expansion_Pack_v0.1.5]]"
-traveler_system: "[[穿越与系统_Expansion_Pack_v0.2]]"
-creator_binding: pending
-asset_spec_binding: pending
-runtime_asset: true
+world_pack: "[[汉末三国_天下未定_World_Pack_v0.2.3]]"
 language: zh-CN
 tags:
   - 三国
   - ExpansionPack
   - 历史参照
   - 历史分歧
-  - Reference
-  - Divergence
   - T0
-  - HistoricalKnowledge
 ---
 
 # 汉末三国：历史参照与分歧｜Expansion Pack v0.2
 
 > [!abstract] 一句话定位
-> **本包保存现实历史的“参照”，解释当前世界中的正式 Event 使哪些原历史前提失效，以及某段原历史未来知识现在还有多少参考价值。**
+> **本包保存现实历史作为“参照”，让 GM 能随时回答：当前游戏中已经发生的事情，使哪些原历史前提失效了；某段原历史知识，对眼前的世界还有多少参考价值。**
 >
-> 它永远不拥有：
->
-> **当前世界如何继续演化。**
->
-> T0 后：
->
-> **Game State > Original History Reference。**
-
-> [!important] v0.2 重构摘要
-> - `Structural Historical Pressure State` 不再作为独立当前世界 State；
-> - 改成 `Historical Structural Pressure Reference / Derived Context`；
-> - Divergence Record 只引用正式 Game Event，不复制第二份事件历史；
-> - 更新 Politics / Economy / War v0.2 read-only 接口；
-> - Traveler/System 的 Historical Assistance Module 条件依赖本包，而不是本包依赖 System；
-> - 普通 UI 贡献到 Core `信息`；
-> - System ON + Historical Assistance 时可贡献到 `系统 > 历史参照`；
-> - “历史已经改变！”仍由 System / Global Notice 决定如何显示；
-> - 不建立历史偏离百分比、修正力或隐藏剧情推动器。
+> 它永远不决定当前世界如何继续演化。T0 之后，**游戏内的现实高于原历史**。
 
 ---
 
-# 1. Scope Lock
+# 1. 这个包为游戏增加什么
 
-## 本包拥有
+装上这个包，游戏多了一层“历史意识”：
 
-- Original History Reference；
-- Historical Reference Node；
-- Reference Preconditions；
-- Reference source / dispute；
-- Reference dependency / related graph；
-- Reference Validity；
-- Divergence Annotation / Record；
-- Historical Knowledge Relevance；
-- T0 authority boundary；
-- event-driven local re-evaluation；
-- Significant Historical Divergence Signal；
-- Historical Structural Pressure Reference / Derived Context。
+- 世界不再假装原历史不存在。官渡、赤壁、荆州易主这些玩家和 GM 都熟悉的真实历史，成为一套随时可以查阅、对照的参照系；
+- 当游戏走出与原历史不同的道路时，GM 有一套清晰的语言描述“哪里不一样了、为什么不一样、哪些原来的预期已经作废”；
+- 知道原历史的角色（最典型的就是穿越者）会真实地感到：**自己记忆里的“未来”正在一段一段失效**。先知优势会折旧，这正是这个包要制造的核心体验；
+- 玩家可以放心大胆地改变历史——这个世界没有一只看不见的手把剧情拉回“正轨”。
 
-## 本包不拥有
+没有这个角色知道原历史，这个包依然有用：它是 GM 的幕后工具，帮助 GM 把握世界变化的幅度和方向。
 
-- Current World Trend；
-- NPC Plan；
-- Political Outcome；
-- Economy Outcome；
-- War Outcome；
-- Character Capability progression；
-- World OS Event history；
-- Traveler identity / System State；
-- RNG / Dice / Commit；
-- 当前世界未来预测。
+# 2. 它关注什么、引入什么因果逻辑
 
----
+本包只关心一件事：**原历史参照与当前游戏现实之间的对照关系**。
 
-# 2. Authority Boundary
-
-## T0 之前
-
-World Pack + Historical Baseline Resolver：
-
-> 可以把已经发生的历史锁入 Game Bootstrap。
-
-## T0 之后
-
-现实历史：
-
-> 只作为 Original History Reference。
-
-如果 Reference 与当前 Game State 冲突：
-
-> 当前 Game State 胜出。
-
----
-
-# 3. Original History Reference
-
-一个 Reference 至少语义上包含：
-
-- topic；
-- time window；
-- relevant people / organization / place；
-- historical outcome；
-- high-value preconditions；
-- source；
-- dispute；
-- related references；
-- current validity。
-
-Reference：
-
-> 不是 Future Event。
-
----
-
-# 4. Preconditions
-
-只保存：
-
-> 对原历史结果真正有重要解释力的少量条件。
-
-例如：
-
-- key character alive；
-- political position；
-- territory control；
-- alliance；
-- previous campaign result；
-- major economic condition。
-
-不复制整个 Game State。
-
----
-
-# 5. Divergence Record Is Annotation, Not Event
-
-Divergence Record 必须绑定：
-
-> 正式 Game Event。
-
-它只保存：
-
-- source Event；
-- affected Reference；
-- precondition changed；
-- why；
-- evaluation time。
-
-不能保存第二份：
-
-> “实际上发生了什么”。
-
-真正历史仍在 World OS Event / Game State。
-
----
-
-# 6. Historical Structural Pressure Reference
-
-这是本版最大修订。
-
-旧 `Structural Pressure State` 容易成为第二 World Trend。
-
-新版改为：
-
-> **Historical Structural Pressure Reference / Derived Context**
-
-它回答：
-
-> **“现实历史中的某类结构性压力，在当前正式世界条件下是否仍具有解释 / 参照价值？”**
-
-例如：
-
-- 北方统一政权向长江流域扩张；
-- succession pressure；
-- 地缘边界竞争；
-- major fiscal strain；
-- strategic resource conflict。
-
-## 6.1 Derived Only
-
-它的当前判断只能来自：
+它引入的因果逻辑是单向的：
 
 ```text
-Politics / Economy / War / World current facts
-↓ read-only
-Historical Reference
-↓
-Derived Pressure Relevance
+游戏中真实发生的事（人物死亡、政权更替、战役胜负、联盟破裂……）
+        ↓
+受影响的原历史参照被重新评估
+        ↓
+相关历史知识的“参考价值”随之更新
 ```
 
-## 6.2 Not a World Driver
+箭头只有这一个方向。参照永远不会反过来推动世界：历史不生成事件，不修正结果，不替任何人做决定。
 
-禁止：
+# 3. 原历史是参照，不是未来事件队列
 
-```text
-History Pressure State
-→ 自动创建 War / Politics Event
-```
+这是本包最根本的原则，请 GM 时刻记住：
 
-它没有：
+- 原历史是**参考资料**，记录“在我们所熟知的历史里，事情曾经那样发生”；
+- 它**不是**一份等待触发的剧本。208 年到来不等于赤壁之战必须发生；某个角色在原历史里死于某年，不等于他在本局必须死于那一年；
+- 当参照与当前游戏现实冲突时，**以游戏现实为准**，永远如此。
 
-- Action authority；
-- RNG authority；
-- Current State mutation authority。
+T0（玩家进入世界的时刻）之前已经发生的历史，由世界包在开局时锁为既成事实。T0 之后，一切都是开放的未来。
 
-即使 Runtime 为性能缓存它：
+# 4. 一条历史参照包含什么
 
-> 缓存也必须可从当前正式 Owners 重新计算，不是独立世界真相。
+一条参照是自然语言的历史知识条目，通常包含：
 
----
+- **主题**：什么事（如“孙策之死与孙权继位”）；
+- **时间范围**：原历史中大致何时发生；
+- **相关人物、势力、地点**；
+- **原历史结果**：在真实历史里最后怎样了；
+- **关键前提**：哪些条件对这个结果真正有解释力（见下节）；
+- **史料来源与争议**：出自哪里，是否有不同记载；
+- **当前参照价值**：对眼下这局游戏还有多大意义（见第 7 节）。
 
-# 7. Reference Validity
+参照可以来自 GM 的历史知识、世界包的背景材料，也可以在游戏过程中随时补充。它是知识，不是机制物件。
 
-推荐语义状态：
+# 5. 关键前提：少而精
 
-- unassessed；
-- highly relevant；
-- partially relevant；
-- transformed；
-- key preconditions invalidated；
-- approximately realized；
-- differently realized；
-- no longer useful。
+每条参照只记录少数几个对原历史结果**真正有重要解释力**的条件，例如：
 
-它回答：
+- 某个关键人物当时还活着；
+- 某人占据某个政治位置；
+- 某方控制某片地域；
+- 某个联盟存在；
+- 前一场重要战役的结果；
+- 某种重大经济形势。
 
-> **参照价值**
+不要把整个世界状态抄进前提清单。前提的价值在于：当游戏里某个前提被推翻时，GM 能立刻看出“这条参照的逻辑基础没了”。
 
-不是：
+# 6. 分歧是对游戏事实的注解，不是第二份历史
 
-> 发生概率。
+当游戏中的真实进展使某条参照的前提或结果不再成立，GM 可以为它写下**分歧注解**：
 
----
+- 发生了什么游戏事实（指向真实的游戏进程，而不是另写一份“发生了什么”）；
+- 它影响了哪条参照；
+- 哪个前提被改变了，为什么。
 
-# 8. Historical Knowledge Relevance
+分歧注解永远依附于游戏真实发生的事。本包不维护第二份“事件史”——真正的历史就是游戏本身一步步走出来的进程，注解只是站在原历史视角做的对照批注。
 
-Character 可以记得：
+# 7. 参照价值：一套描述语言
 
-> 原历史某事件。
+对每条参照，GM 可以用下面的分级描述它当前的价值（这是语感工具，不是必须逐条打标签的账本）：
 
-即使世界已经改变：
+- **未经评估**：还没对照过当前局势；
+- **高度相关**：前提基本都在，原历史走向对当前仍有很强的参照力；
+- **部分相关**：部分前提变了，结论只能有限参考；
+- **已经变形**：大方向似乎还在，但实现路径、参与者或形式已经明显不同；
+- **关键前提失效**：支撑这个结果的核心条件已经不存在了；
+- **近似实现**：结果以接近原历史的方式真的发生了；
+- **以不同方式实现**：类似的历史结果出现了，但由不同人物、不同过程达成；
+- **不再有用**：世界已经走到这条知识完全帮不上忙的地方。
 
-> 这段记忆不会自动删除。
+注意：这套分级描述的是**参照价值**，不是发生概率。“高度相关”不意味着“大概率会发生”。
 
-变化的是：
+# 8. 结构性历史压力：一种参照性的背景眼光
 
-> **它对当前世界未来的参考价值。**
+真实历史里有些力量是结构性的，不因个别事件的改变而消失，例如：
+
+- 北方统一政权向长江流域扩张的地缘压力；
+- 大政权内部的继承压力；
+- 边界地带的长期竞争；
+- 沉重财政负担引发的动荡；
+- 对战略资源（产粮区、要冲、马匹）的争夺。
+
+GM 可以拿这些结构性背景对照当前局势：**“这类压力，在当前世界的条件下还在吗？以什么形式存在？”** 例如赤壁没打成，但“统一的北方与长江流域之间的地缘矛盾”可能依然存在，并以全新的方式表现出来。
+
+但请严格守住边界：
+
+- 结构性压力只是 GM 的**参照性判断**，完全从当前政治、经济、军事的真实状况中读出来；
+- 它**不是**一股推动世界的隐藏力量。它不制造事件、不改写结果、不替任何势力安排行动；
+- 如果某种结构性压力在当前世界确实存在，那么它会**通过当前世界自己的条件**（真实的人物、利益、资源、关系）自然表现出来——是世界产生了新的事件，不是历史产生了它们。
+
+# 9. 人物的历史记忆与知识参考价值
+
+知道原历史的角色（如穿越者），其记忆不会因为世界改变而自动删除。改变的是这段记忆**对当前未来的参考价值**。
 
 例如：
 
 ```text
-Character memory:
-219 年关羽失荆州
+角色记忆：219 年，关羽失荆州。
 
-Current world:
-关羽已不在荆州
-↓
-Relevance:
-key preconditions invalidated
+当前世界：关羽早已不在荆州任职，荆州局势完全不同。
+        ↓
+这段记忆：关键前提失效——它仍是角色的真实记忆，
+但拿它去“预言未来”已经没有意义。
 ```
 
----
+这让“先知”类角色面临真实的张力：记忆里的事件有些如期而至，有些面目全非，有些被证明已经作废。GM 应让这种折旧感真实地体现在角色的判断和失误中——一个死抱着失效记忆不放的角色，会做出糟糕的决策。
 
-# 9. No Fate / No Correction Force
+# 10. 没有命运，没有历史修正力
 
-禁止：
+本包明确禁止以下一切做法：
 
-- year == 208 → trigger Chibi；
-- 现实历史失败方暗减骰；
-- key character 必须按史死亡；
-- 世界线稳定度；
-- 历史修正力；
+- 年份到了就触发原历史事件（“208 年 = 赤壁”）；
+- 因为某方在原历史中失败，就暗中让它运气变差、判定变难；
+- 关键人物必须按史实死亡；
+- “世界线稳定度”“历史修正力”“命运收束”之类的设定；
 - 全局偏离百分比；
-- “命运自动找替代者复现同一结果”。
+- 原历史中的结果由另一个“替代者”自动复现。
 
-如果 Structural Pressure 仍存在：
+如果某种结构性压力仍然存在，当前世界会**根据自己的现实条件**生长出新的可能性——那是世界的事，不是历史的事。
 
-> 当前世界自己根据现实条件产生新的可能 Event。
+# 11. 什么时候重新评估参照
 
-History 不生成它。
+不需要事事对照历史。只在**高影响事件**发生后，重新评估与之直接相关的参照及其有限的邻域：
 
----
+- 关键人物死亡，或在原历史死期之后仍然存活；
+- 继承格局改变；
+- 政权建立或崩溃；
+- 重大承认关系或控制格局改变；
+- 重大联盟变动；
+- 重要战役的结果；
+- 重大占领；
+- 重大经济崩溃或恢复。
 
-# 10. Event-driven Local Re-evaluation
+日常琐事——喝酒、普通交易、闲聊——不需要碰历史参照。一件小事如果最终导致了关键人物死亡，是在死亡这个事实发生时，才做相应的重新评估。
 
-高影响触发：
+# 12. 与其它拓展包的关系
 
-- key character death / survival beyond anchor；
-- succession change；
-- regime formation / collapse；
-- major recognition / control change；
-- major alliance change；
-- major campaign result；
-- major occupation；
-- major economic collapse / recovery；
-- other explicitly high-impact Event。
+本包对世界只有一种姿态：**读取，对照，批注**。它从不改写任何其它领域的事实。
 
-只重评估：
+- **政争与势力**：政权、继承、承认、控制、联盟、政治主张的变化，是最主要的历史分歧来源。本包只读取这些事实来重估参照，绝不要求政治“贴回原历史”；
+- **财赋与治理**：大饥荒、大规模流民、生产崩溃或恢复、重大财政与粮食变动，具有历史级的解释力，值得对照；
+- **军略与战争**：重大战役结局、占领、关键将领死亡或被俘，同样如此；
+- **穿越与系统**：见下一节。依赖方向是单向的——穿越与系统包里的历史辅助功能以本包为内容来源，而本包自身**不依赖系统**。没有系统，本包的一切照常运转，只是不通过系统界面呈现。
 
-> 直接关联 Reference + 有限邻域。
+任何包都不需要为了配合本包而改变自己的工作方式；本包只是站在旁边做历史对照。
 
-喝酒、普通交易、闲聊：
+# 13. 穿越者与系统：历史知识如何进入游玩
 
-> 不全局重算历史。
+**没有启用系统**时：
 
----
+- GM 照常维护参照与分歧判断，防止剧本锁死；
+- 知道原历史的角色凭自己的记忆行动，记忆与现实的落差直接体现在叙事里。
 
-# 11. Politics / Economy / War Read-only Integration
+**启用系统**、且系统开启了历史辅助功能时：
 
-## Politics
+- 系统可以向玩家呈现允许查看的参照、已确认的变化、以及未来知识的参考价值提醒；
+- 系统可以消费“显著历史分歧”的信号（见下节），给出“历史已经改变！”式的提示。
 
-读取：
+无论哪种情况，本包都不决定系统界面怎么写、怎么显示——那是穿越与系统包的事。本包只提供对照结论。
 
-- Regime；
-- Succession；
-- Recognition；
-- Political Control；
-- Alliance；
-- Claim。
+# 14. “历史已经改变！”：一个提示信号
 
-## Economy
-
-读取高影响：
-
-- major famine；
-- migration；
-- production collapse / recovery；
-- major fiscal / grain change；
-- infrastructure transformation。
-
-## War
-
-读取：
-
-- major campaign outcome；
-- occupation；
-- key commander death / capture；
-- formation destruction；
-- strategic result。
-
-History：
-
-> 只做 Reference 重评估。
-
-绝不回写这些 Owners。
-
----
-
-# 12. Historical Resolver Boundary
-
-Historical Reference Resolver 可以：
-
-- 查询现实历史资料；
-- 记录来源；
-- 记录争议；
-- 形成 Reference Candidate。
-
-严格禁止：
-
-- 修改 NPC plan；
-- 修改 Game State；
-- 修改 current politics；
-- 修改 war result；
-- 修改 character location。
-
-联网历史资料：
-
-> 永远只能进入 Reference layer。
-
----
-
-# 13. Traveler / System Handoff
-
-依赖方向：
-
-```text
-EP-TRAVELER-SYSTEM
-Historical Assistance Module
-→ conditional requires
-汉末三国：历史参照与分歧
-```
-
-本包：
-
-> 不 Hard Depend System。
-
-没有 System：
-
-- 仍可后台维护 Reference Validity；
-- 仍可防止剧本锁；
-- OOC / GM 可以查看参照。
-
-有 System：
-
-- 可以读取 player-safe Reference；
-- 可以查询 Historical Knowledge Relevance；
-- 可以消费 Significant Divergence Signal。
-
----
-
-# 14. “历史已经改变！” Signal
-
-本包只负责：
-
-> `Significant Historical Divergence Signal`
-
-触发条件：
-
-- Major Divergence 已正式 Commit；
-- important Reference 的 Validity 显著改变；
-- current player/system 拥有合法 historical access。
-
-本包不直接决定最终 UI 文案。
-
-System 可以显示：
+当真正重大的分歧发生——关键参照的参考价值显著改变，且玩家通过系统或角色身份合法拥有接触历史知识的渠道——本包支持发出一个**显著历史分歧信号**，供系统或 GM 呈现：
 
 > **历史已经改变！**
 
-并附：
+呈现时可以附上：已确认改变的事实、受影响的参照、对未来知识的提醒、影响范围（局部还是更大格局）。
 
-- confirmed changed fact；
-- affected Reference；
-- future knowledge caution；
-- local / broader scope。
+请记住，这个提示是一种**叙事仪式**，提醒玩家“你熟悉的那个未来不存在了”，而不是任何意义上的修正机制——它宣布分歧，从不挽回分歧。
 
-提示不是：
+# 15. 谁知道什么：信息边界
 
-> 历史修正力。
+- **普通汉末人物**：完全不知道“原历史”和“分歧”这回事。他们活在当下，用自己的信息做决定；
+- **穿越者**：只拥有其人物定义所支持的那部分历史知识——读过《三国演义》和背过《资治通鉴》是两种截然不同的知识来源，准确度、细节、偏见都应不同；
+- **角色的记忆**与 **GM 的参照材料**是两回事：角色可能记错、记漏、只记得演义桥段，而 GM 的参照可以更接近史实。两者并存，不要混同；
+- **GM / 玩家（场外）**：可以查看完整的参照、来源、争议与分歧注解，但这些永远停留在场外，不流入角色的知识。
 
----
+# 16. 值得持久化的状态
 
-# 15. Information Boundary
+为了让长期游戏保持一致，以下事实值得在游戏工作区中持久保存：
 
-普通汉末 Character：
+- 当前在用的参照集合，连同来源与争议；
+- 各条参照当前的参考价值判断；
+- 已写下的分歧注解，以及它们各自对应的真实游戏事实；
+- 角色历史记忆的参考价值变化（尤其对穿越者类角色）；
+- 已经发出过的显著分歧提示及其被谁接收。
 
-> 不知道 Original History / Divergence。
+读档或跨会话继续游戏时，这些应原样延续：不重新研究已经过去的旧局势，不把后来补充的参照材料反向写进旧存档，分歧注解始终指向恢复后的真实游戏进程。
 
-Traveler：
+# 17. 游玩中的质感
 
-> 只有其定义支持的 historical knowledge。
+- **分歧发生时的质感**：玩家救了原历史中必死的人、打赢了原历史中必输的仗——世界不抗议、不惩罚，只是平静地继续。随后某个时刻，玩家意识到“后面的事，谁也说不准了”，这种自由与不安并存的感觉正是本包想要的；
+- **先知折旧的质感**：穿越者前期靠记忆占尽先机，随着分歧积累，记忆一段段失灵。这是逐渐收紧的体验，而不是某一刻突然失效；
+- **结构性压力的质感**：具体事件变了，但大地缘、大矛盾还在，像低音一样持续存在。它给世界一种“历史有重量”的感觉，却不替任何人写剧本；
+- **成功改变历史的质感**：不需要百分比告诉玩家“偏离了多少”。分歧注解里“这条预期已失效”“那个结果由另一个人实现了”就是最扎实的成就感。
 
-Character memory 与 Resolver Reference：
+# 18. 它不拥有什么
 
-> 分开。
+本包明确不负责：
 
-OOC / GM1：
+- 当前世界的趋势与未来走向；
+- NPC 的计划与决定；
+- 政治、经济、战争的任何结果；
+- 人物能力的成长；
+- 游戏的事件史本身（它只是给真实进程做批注）；
+- 穿越者身份与系统状态；
+- 判定随机性与任何正式裁定；
+- 对未来世界的预测。
 
-> 可以查看更完整 Reference / causal explanation，但不进入 Character Knowledge。
+# 19. 其它包如何充实它
 
----
+任何包都可以通过**产生真实的游戏事实**来充实本包——政局变动、战争结果、经济兴衰、人物命运，都会自然成为历史对照的新材料。这是一种单向的、非强制的协同：别的包不需要知道本包的存在，本包只是读取已经发生的事实。
 
-# 16. G8 UI Contribution
+反过来，本包也能丰富其它包的叙事：政治包可以用参照解释某次继承危机的历史背景；穿越与系统包可以把分歧信号做成提示。但这些都不是前提条件——拿掉任何一个协同方，本包仍然完整成立。
 
-本包：
+# 20. 裁定参考：常见情形
 
-> **不 owns 一级 Extension Surface。**
+以下情形供 GM 把握分寸，不是穷举：
 
-## Core `信息`
-
-可以贡献：
-
-- OOC historical reference；
-- source / dispute；
-- known divergence；
-- explanation；
-- reference validity。
-
-普通沉浸模式可以完全隐藏这些。
-
-## `系统` Surface
-
-若：
-
-- System ON；
-- Historical Assistance enabled；
-
-可贡献：
-
-```text
-系统
-└─ 历史参照
-   ├─ 原历史
-   ├─ 已确认变化
-   └─ 未来知识参考价值
-```
-
-## Global Notice
-
-System 可根据 Significant Signal：
-
-> 显示“历史已经改变！”。
-
-History 本身不抢 Global Notice 文案 Owner。
+1. 208 年到了但关键前提已变（曹操败亡、荆州易手等）：赤壁不发生，也没有“替代品赤壁”；
+2. 孙策活过了原历史死期：只重新评估江东继承链相关的参照，不影响无关部分；
+3. 关键人物提前死亡：与之直接相关的参照失效，全国历史不会因此整体作废；
+4. 原历史中必死之人被救下：相关参照标记前提失效，可发出分歧信号；
+5. 类似的历史结果由不同人物实现：标为“近似实现”或“以不同方式实现”；
+6. 具体事件失效了，但结构性压力仍然存在：两者可以并存；
+7. 结构性压力判断永远不直接生成战争或政治事件；
+8. 穿越者的记忆保留，但参考价值如实下调；
+9. 荆州大变，不代表河北的参照跟着失效；
+10. 游戏中途补充的新参照材料只增加知识，不改写已经发生的事实；
+11. 角色记忆与 GM 参照不一致（角色记错）：两层并存，角色按自己的错误记忆行动；
+12. 有争议的史料保留争议，不强行裁断；
+13. 参照不替 NPC 生成计划；NPC 只按自己知道的事行动；
+14. 历史对照不影响任何战争或判定的走向；
+15. 小事不做历史重估；
+16. 小事连锁导致关键人物死亡时，以死亡事实为节点做重估；
+17. 重大分歧只在玩家拥有合法历史知识渠道时给出提示；
+18. 未启用系统时不出现系统式提示；
+19. 读档后参照与分歧状态回到存档时的样子；
+20. 几十年后世界走出了全新的历史：正常继续，永不“回正史”。
 
 ---
 
-# 17. Save / Restore
-
-必须恢复：
-
-- loaded Reference set；
-- source / dispute；
-- Reference Validity；
-- Divergence links；
-- Historical Knowledge Relevance；
-- derived-context cache version if any；
-- signal emission / consumption boundary。
-
-Restore 后：
-
-- 不重新联网研究旧世界；
-- 不把后来新 Reference 结果反向污染旧 Save；
-- Divergence links 必须重新指向恢复后的正式 Event history。
-
----
-
-# 18. Standard Regression Scenarios｜20
-
-1. 208 年到来但关键前提失效，不触发赤壁；
-2. 孙策存活只重评估相关江东继承链；
-3. key character 提前死亡不让全国历史全失效；
-4. 原应死亡者被救下 → Reference invalidation + signal；
-5. 类似历史结果由不同人物实现可标 differently/approximately realized；
-6. 具体事件失效但 derived structural relevance 仍可存在；
-7. History derived pressure 不创建新的 War Event；
-8. Traveler 原历史记忆仍在但 relevance 下降；
-9. 荆州改变不自动让河北 Reference 全失效；
-10. T0 后联网查询只新增 Reference；
-11. Resolver 与 Character memory 冲突时两层并存；
-12. disputed sources 保留争议；
-13. Reference 不创建 NPC Plan；
-14. History 不暗调 War RNG；
-15. 小事不触发全局重算；
-16. 小事后续导致关键人物死亡时由正式死亡 Event 触发；
-17. Significant Divergence 只发安全 signal；
-18. System 未安装时不弹系统提示；
-19. Save / Restore 恢复当时 Reference state；
-20. 世界几十年后完全走新历史仍正常继续，不回正史。
-
----
-
-# 19. Host / G9 Requirements
-
-- Historical Reference store；
-- Reference safe entity links；
-- Preconditions predicate；
-- source / dispute metadata；
-- Game Event subscription；
-- affected-neighborhood lookup；
-- read-only cross-owner query；
-- derived context / cache semantics；
-- Historical Knowledge Relevance；
-- Significant Divergence Signal；
-- Traveler/System conditional dependency；
-- `信息` / `系统` Surface contribution；
-- Save / Restore；
-- idempotent re-evaluation。
-
-禁止任意 JS 因果图。
-
----
-
-# 20. Migration From v0.1.1
-
-## 保留
-
-- Original History Reference；
-- Preconditions；
-- Reference Validity；
-- Divergence；
-- local causal re-evaluation；
-- Historical Knowledge Relevance；
-- T0 boundary；
-- No Historical Correction；
-- Traveler signal。
-
-## 重构
-
-- Structural Pressure State → Derived Historical Structural Pressure Reference；
-- Divergence Event → Event-linked annotation；
-- Politics / Economy / War refs → v0.2 read-only；
-- Traveler old package → `穿越与系统` Historical Assistance Module；
-- UI → Core `信息` + conditional `系统` contribution。
-
-## 删除
-
-- 任何可能把 Structural Pressure 当当前 World Trend 的语义；
-- History 自己推动当前世界的路径；
-- System-specific UI ownership；
-- 旧三国人物能力包直接依赖。
-
----
-
-# 21. Final Freeze
-
-> **History 管参照，不管命运。**
+> **历史管参照，不管命运。**
 >
-> **Divergence 是对正式 Event 的历史参照解释，不是第二 Event History。**
+> **分歧是对真实游戏进程的历史注解，不是第二份历史。**
 >
-> **Structural Pressure 是 read-only Derived Reference Context，不是第二 World Trend。**
+> **结构性压力是参照性的背景眼光，不是推动世界的力量。**
 >
-> **T0 后 Game State 永远高于现实历史。**
->
-> **Traveler/System Historical Assistance 条件依赖本包；本包不依赖 System。**
->
-> **本包不 owns 一级 Surface，只贡献 Core“信息”和可选“系统 > 历史参照”。**
+> **T0 之后，游戏现实永远高于原历史。**

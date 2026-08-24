@@ -4,24 +4,12 @@ aliases:
   - 三国政治机制拓展包
   - Han Late Three Kingdoms Politics Expansion
 created: 2026-08-16
-updated: 2026-08-16
+updated: 2026-08-24
 status: candidate
 version: 0.2.1
-workflow_mode: light-asset
-operation_mode: revise
 asset_type: expansion-pack
-output_profile: obsidian-markdown
 asset_family: 汉末三国：天下未定
 world_pack: "[[汉末三国_天下未定_World_Pack_v0.2.3]]"
-character_core: "[[人物能力与技艺_Expansion_Pack_v0.1.5]]"
-relationship_core: "[[关系与恋爱核心_Expansion_Pack_v0.2]]"
-health_core: "[[身体状态核心_Expansion_Pack_v0.1]]"
-economy_expansion: "[[汉末三国_财赋与治理_Expansion_Pack_v0.2]]"
-war_expansion: "[[汉末三国_军略与战争_Expansion_Pack_v0.2]]"
-history_expansion: "[[汉末三国_历史参照与分歧_Expansion_Pack_v0.2]]"
-creator_binding: pending
-asset_spec_binding: pending
-runtime_asset: true
 language: zh-CN
 tags:
   - 三国
@@ -32,1640 +20,436 @@ tags:
   - 外交
   - 继承
   - 政权
-  - Authority
-  - Jurisdiction
-  - RuntimeExtensibleUI
 ---
 
 # 汉末三国：政争与势力｜Expansion Pack v0.2.1
 
 > [!abstract] 一句话定位
-> **把汉末三国世界中的政治集团、政治归属、官职与职权、政治承认、政治控制、外交、继承、政治主张与政权转化，变成持续、可验证、由 Program 正式裁定和提交的政治机制。**
+> **把汉末世界的政治集团、政治归属、官职与职权、政治承认、政治控制、外交、继承、政治主张与政权兴替，变成一套持续的、有分量的游戏机制。**
 >
-> 本包回答的是：
+> 本包回答的问题是：
 >
-> **“谁在什么政治结构中拥有什么正式身份、权力、立场、主张和制度关系，这些政治事实怎样合法改变？”**
+> **“谁在什么政治结构中拥有什么正式身份、权力、立场、主张和制度关系？这些政治事实怎样合法地改变？”**
 >
-> 它不拥有私人感情、不拥有 Character Capability、不拥有 World OS Commitment，也不把政治身份变成玩家行为白名单。
-
-> [!important] v0.2 重构依据
-> 本版是对旧 `《汉末三国：政争与势力》v0.1.3` 的中度重构。
->
-> 主要变化：
->
-> - 删除对旧 `《汉末三国：人物能力与技艺》` 的依赖；
-> - 改为消费通用 `EP-CHAR-CORE`，并贡献政治领域 Skill Definition；
-> - 正式分离 Politics 与 Relationship Truth；
-> - 正式分离 Political Agreement 与 World OS Commitment；
-> - 政治婚姻不再由 Politics 拥有 Marriage Bond；
-> - “政治支持”只表示正式政治立场 / 背书，不创建私人关系数值；
-> - 接入 `EP-HEALTH-CORE` 的人物履职可用性读取边界；
-> - 正式请求拥有 G8 一级 `势力 / 政务` Extension Surface；
-> - 为后续 Economy 贡献到该 Surface 预留明确 Contributor 边界；
-> - 不冻结 G9 asset-spec vNext 的机器字段。
+> 它不拥有私人感情，不拥有人物能力，也不把政治身份变成玩家行为的白名单。
 
 ---
 
-# 0. Current Contract｜当前冻结方向
+# 1. 这个包为游戏增加什么
 
-本版采用以下硬边界：
+装上这个包，汉末世界从“一群有名有姓的人物”变成“一个真正运转的政治世界”：
 
-1. Politics 继续是汉末三国政治事实 Owner；
-2. Character Capability 统一归 `EP-CHAR-CORE`；
-3. Relationship / Romance 统一归 `EP-RELATIONSHIP-ROMANCE-CORE`；
-4. World OS `Commitment` 继续拥有“谁明确答应了谁什么”；
-5. Politics 可以拥有 Political Agreement / Institutional Relation，但不复制 Commitment；
-6. Marriage Bond 属于 Relationship Core；婚姻政治后果属于 Politics；
-7. Political Support / Endorsement 属于 Politics；私人 Trust / Respect / Attachment 属于 Relationship；
-8. Authority / Jurisdiction 决定正式政治效果是否成立，不决定玩家能不能尝试；
-9. Politics 不创建万能“忠诚度 / 合法性 / 政治点”；
-10. Program 拥有 RNG / Formal Outcome / Atomic Commit；
-11. 本包拥有一个一级 `势力 / 政务` Extension Surface；
-12. Economy 可以向该 Surface contribute，但不能 owns 同一 Surface。
+- 官职不再是头衔装饰。一张任命背后有授权来源、管辖范围、承认与否，伪造诏书和合法除授是两件完全不同的事；
+- 势力不再是名单。集团有承认关系、外交姿态、继承安排，会分裂、会倒戈、会在承认与实力之间挣扎；
+- 政治行为有了正式的分量。投奔、举荐、任命、结盟、称帝、指定继承人——这些都真实改变世界，而不只是对话选项；
+- 玩家可以走一条完整的政治道路：从白衣到掾吏，从别驾到州牧，从称雄一方到开国建制——或者伪造、策反、冒名，走一条完全不同的路，并承担后果；
+- NPC 是有政治主体性的人。他们按自己的利益、身份、关系、信息和当下条件做政治选择，不是等待玩家分配的棋子。
 
----
+# 2. 它关注什么、引入什么因果逻辑
 
-# 1. Scope Lock｜职责边界
+本包关注**正式政治事实**：身份、职权、承认、控制、协议、继承、主张。
 
-## 1.1 本包唯一回答的问题
+它引入的核心因果逻辑是：
 
-> **“一个人物或政治主体目前处在怎样的政治结构中；谁拥有什么正式政治身份、职权、承认、控制、外交关系、继承安排和政治主张；这些事实怎样通过合法政治行为发生改变？”**
+- 正式政治效果需要**制度性权力来源**（权威）和**有效范围**（管辖）才能成立。无权者可以宣称，但宣称不产生合法效果；
+- 政治事实的改变通过**政治行为**发生：任命、承认、结盟、宣言、继承安排，而不是通过数值漂移自动发生；
+- 政治后果会传导：一场战役的占领不自动等于行政控制；一次婚姻不自动等于联盟；一个承诺的背弃会动摇协议。每一环都需要单独成立；
+- NPC 的政治行为遵循**利益、身份、关系、信息与当前条件**。同一个人在不同信息、不同处境下会做出不同的政治选择——政治不是确定性的状态机，也不是一张分数表。
 
-## 1.2 本包必须负责
+# 3. 最重要的区分：政治事实与私人关系
 
-- Political Faction / Regime；
-- Political Affiliation；
-- Office Definition 的题材语义；
-- Office Holding；
-- Political Authority / Jurisdiction；
-- Political Recognition；
-- Political Control；
-- Organization-to-Organization Diplomatic Relation；
-- Political Agreement / Institutional Relation；
-- Recruitment / Recommendation / Appointment；
-- Political Endorsement / Opposition；
-- Succession；
-- Political Claim；
-- Regime Formation / Transition；
-- Political Event；
-- Politics Knowledge / player-safe projection；
-- Politics → War / Economy / History Handoff；
-- Politics UI Surface Ownership。
+这是本包最重要的设计决定，请 GM 始终分清两套事实。
 
-## 1.3 本包明确不负责
+## 3.1 私人关系归私人关系
 
-- Character Personality；
-- Character 六层 Capability State；
-- Sentiment；
-- Trust；
-- Respect；
-- Attachment；
-- Relationship Commitment；
-- Romantic Attraction；
-- Relationship Memory；
-- Marriage Bond；
-- World OS Commitment；
-- 私人财产与嫁资；
-- Treasury / Grain / Tax Outcome；
-- Formation / Campaign / Battle Outcome；
-- HP / Injury / Disease / Treatment / Recovery；
-- Historical Reference Validity；
-- RNG / Dice；
-- Formal Outcome；
-- Atomic Commit；
-- Creator / asset-spec 最终机器 Schema。
+信任、敬重、亲近、爱慕、怨恨——这些是私人关系真相，由关系机制（关系与恋爱核心包）承载。本包不保存第二套“私人忠诚值”“好感”“友情”。
 
----
+## 3.2 政治支持是正式立场，不是感情
 
-# 2. Ownership Map｜唯一事实源
+本包保存的是：**一个人物或政治主体在某个明确政治议题上的正式支持、反对或背书**。例如：
 
-| 概念 | 唯一 Owner | Politics 如何使用 |
-|---|---|---|
-| 人格 / 价值观 /长期目标 | Character Definition | NPC 政治选择输入 |
-| Character Capability | EP-CHAR-CORE | Optional Capability Integration |
-| 私人 Relationship Truth | EP-RELATIONSHIP-ROMANCE-CORE | Context / Event Handoff |
-| Marriage Bond | EP-RELATIONSHIP-ROMANCE-CORE | 读取成立事实 |
-| 明确 Promise / Commitment | World OS Commitment | 引用 / 创建 Handoff |
-| 政治集团 | 本 Expansion | 正式职责 |
-| 政治归属 | 本 Expansion | 正式职责 |
-| 官职 / Office Holding | 本 Expansion | 正式职责 |
-| Authority / Jurisdiction | 本 Expansion + World / Office structure | 正式政治效果验证 |
-| Political Recognition | 本 Expansion | 正式职责 |
-| Political Control | 本 Expansion | 正式职责 |
-| 外交政治关系 | 本 Expansion | 正式职责 |
-| 继承 | 本 Expansion | 正式职责 |
-| Political Claim | 本 Expansion | 正式职责 |
-| 财政 / 粮食 /人口 /治理执行 | 财赋与治理 | Safe Read / Handoff |
-| Formation / Campaign / Military Occupation | 军略与战争 | Safe Read / Handoff |
-| Persistent Health | EP-HEALTH-CORE | 履职可用性输入 |
-| Historical Reference / Divergence | 历史参照与分歧 | Event Consumer |
-| World Time / Event / Knowledge | World OS / Runtime | 复用 |
-| Formal Outcome / Atomic Commit | Runtime | 执行 |
-
----
-
-# 3. Politics != Relationship｜政治事实与私人关系分离
-
-这是本版最重要的收口之一。
-
-## 3.1 私人关系归 Relationship Core
-
-例如：
-
-```text
-A → B
-Trust = 高
-Respect = 高
-Attachment = 高
-```
-
-属于：
-
-> Relationship Core。
-
-Politics 不保存第二套：
-
-- 私人忠诚值；
-- 好感；
-- 友情；
-- 爱情；
-- 私人信赖。
-
-## 3.2 Political Support｜政治支持
-
-Politics 可以保存：
-
-> **一个人物或政治主体在某个明确政治议题上的正式支持 / 反对 / 背书。**
-
-例如：
-
-- 公开支持曹丕继承；
-- 拒绝承认某帝号；
+- 公开支持曹丕嗣位；
+- 拒绝承认某个帝号；
 - 支持某项联盟；
 - 站在某派系一方；
 - 表态拥护某一政治主张。
 
-它回答：
+它回答“在这个议题上，他正式站在哪边”，不回答“他私人有多喜欢这个人”。
 
-> **“在这个政治议题上，他正式站在哪边？”**
+## 3.3 两套事实可以相反，互不覆盖
 
-不回答：
-
-> “他私人有多喜欢这个人？”
-
-## 3.3 同一人物可以关系亲近但政治反对
-
-合法状态：
+完全合法的状态：
 
 ```text
-Relationship:
-A 很信任 B
-
-Politics:
-A 公开反对 B 的称帝主张
+私人关系：甲非常信任乙。
+政治立场：甲公开反对乙称帝。
 ```
 
-同样：
+反过来也成立：甲与乙私交恶劣，但因共同利益正式支持乙的继承资格。
+
+政治反对不自动把私人关系改成敌对，私人亲近也不自动带来政治支持。玩家在游玩中应能真切感到这两层各自独立运动——挚友在朝堂上针锋相对，政敌私下里惺惺相惜，都是这个世界的常态。
+
+## 3.4 没有万能忠诚度
+
+汉末语境里的“忠诚”可能同时涉及私人情感、价值观、政治归属、公开立场、对官职与政权的责任、以及明确许下的承诺。因此本包不存在 `忠诚 = 82` 这样的数值。要判断一个人物在特定情境下会如何行动，请回到他的人格、关系、立场、承诺与处境逐条推敲——这正是扮演的乐趣所在。
+
+# 4. 政治婚姻：三层事实分开结算
+
+一场联姻至少涉及三层互不蕴涵的事实：
+
+- **婚姻本身**：两人之间的婚约关系是否成立，归关系机制；
+- **政治层面**：联姻提案的政治条件、双方家族与势力是否支持、联姻是否带来政治协议、对联盟／承认／继承的影响，归本包；
+- **经济层面**：嫁资、财产、土地与资源转移，归财赋机制。
+
+所以：
 
 ```text
-Relationship:
-A 与 B 私人关系很差
-
-Politics:
-A 因共同利益正式支持 B 的继承资格
+婚姻成立 ≠ 政治联盟成立 ≠ 经济利益达成 ≠ 两人相爱
 ```
 
-两套事实不能互相覆盖。
+婚姻办了而联盟谈崩、政治合作达成而两人毫无感情，都是正常结果。GM 应分别裁定，各记各的账。
 
-## 3.4 不建立 Universal Loyalty Score
+# 5. 政治协议与具体承诺
 
-“忠诚”在汉末语境中可能同时涉及：
+## 5.1 政治协议是制度关系
 
-- 私人情感；
-- 价值观；
-- 政治归属；
-- 公开政治立场；
-- 对 Office / Regime 的责任；
-- 明确 Commitment。
+本包保存持续的政治协议状态：同盟、互不侵犯、臣属／宗主、相互承认、共同政治目标、停战协议等。它们是**参与主体之间已经成立的制度性关系**。
 
-因此本包不建立：
+## 5.2 协议里的具体承诺单独成立
 
-> `loyalty = 82`
+如果协议中出现“我方三个月内运粮五千石”“贵方遇袭时我出兵相救”这类明确承诺，那么：
 
-这种万能状态。
+- **协议是否仍然成立、破裂有何政治后果**——由本包裁定；
+- **承诺是否被履行或背弃**——作为明确承诺单独追踪（由游戏基础层管理“谁答应了谁什么”）；
+- **粮食是否真的运得出**——问经济；
+- **援军是否真的到得了**——问战争。
 
-必须根据具体语义落到对应 Owner。
+本包不自己维护第二套“承诺已履行／已违背”的账本，但承诺被背弃这个事实会带来真实的政治后果：同盟动摇、承认撤回、声望受损。
 
----
+# 6. 人物能力与政治
 
-# 4. Marriage Boundary｜政治婚姻分权
+本包为人物能力体系（人物能力与技艺包）提供政治领域的技能语义，人物在这些领域的造诣高低仍由能力机制统一承载。本包定义的政治相关技艺领域：
 
-## Relationship Core owns
+- **法政**：法令、官制、制度、程序、政治规范；
+- **人事与识才**：判断人才、职责匹配、组织用人——注意这不等于读心，看不穿一个人的人格与真实动机；
+- **外交**：政治主体之间的正式沟通、条件交换、长期政治关系设计；
+- **辩说**：论证、说服、反驳、正式与非正式的政治表达；
+- **政局判断**：权力结构、派系、时机、名义与实际力量、政治风险。
 
-- Marriage Bond；
-- 双方 Directed Relationship；
-- Relationship Agreement；
-- Boundary；
-- Relationship Memory。
+**能力不能强制政治结果。** 即使辩说、外交、政局判断俱是顶尖，也不能：
 
-## Politics owns
-
-- 联姻提案的政治条件；
-- 家族 / 势力是否支持；
-- 联姻产生的 Political Agreement；
-- Alliance / Recognition / Succession consequence；
-- 对政治主张的影响。
-
-## Economy owns
-
-- 嫁资；
-- 财产；
-- 土地；
-- Resource transfer。
-
-因此：
-
-```text
-Marriage
-!=
-Political Alliance
-!=
-Economic Transfer
-!=
-Love
-```
-
-一场婚姻可以成立，而政治联盟失败。
-
-也可以形成政治合作，而双方没有 Romantic Attraction。
-
----
-
-# 5. Political Agreement vs World OS Commitment
-
-## 5.1 Political Agreement｜政治制度关系
-
-Politics 可以拥有持续的政治协议状态，例如：
-
-- Alliance；
-- Non-aggression；
-- Submission / Suzerainty；
-- Mutual Recognition；
-- Joint Political Objective；
-- Cease-hostility political agreement。
-
-它保存：
-
-> 参与政治主体之间已经成立的制度性 / 政治关系。
-
-## 5.2 Commitment｜明确承诺对象
-
-如果协议中出现：
-
-> “我方承诺在三个月内提供五千石粮。”
-
-或：
-
-> “我答应在遭到进攻时出兵相救。”
-
-则具体 Promise：
-
-> **必须进入 World OS Commitment。**
-
-正确链：
-
-```text
-Political Negotiation
-↓
-Political Agreement established
-+
-explicit promises extracted
-↓
-World OS Commitment
-```
-
-之后：
-
-- Agreement 是否仍成立 → Politics；
-- Promise 是否履行 / 违背 → Commitment；
-- 财政能否支付 → Economy；
-- 出兵是否发生 → War。
-
-## 5.3 Politics 不复制 Commitment lifecycle
-
-Politics 不建立：
-
-- pending political promise；
-- fulfilled political promise；
-- broken political promise；
-
-第二套状态。
-
-它只引用正式 Commitment，并消费履行 / 违背 Event 的政治后果。
-
----
-
-# 6. Character Capability Integration｜人物能力接口
-
-旧三国人物能力包已经退役。
-
-本包现在统一消费：
-
-> `EP-CHAR-CORE｜人物能力与技艺`
-
-## 6.1 Politics contributes Skill Definitions
-
-本包向统一 Skill Registry 贡献：
-
-### 法政
-
-- 法令；
-- 官制；
-- 制度；
-- 程序；
-- 政治规范。
-
-### 人事与识才
-
-- 判断人才；
-- 职责匹配；
-- 组织用人。
-
-不等于：
-
-> 读心 / 看穿人格。
-
-### 外交
-
-- 政治主体之间的正式沟通；
-- 条件交换；
-- 长期政治关系设计。
-
-### 辩说
-
-- 论证；
-- 说服；
-- 反驳；
-- 正式 / 非正式政治表达。
-
-### 政局判断
-
-- 权力结构；
-- 派系；
-- 时机；
-- 名义与实际力量；
-- 政治风险。
-
-## 6.2 Politics 不拥有 Skill mastery
-
-正确：
-
-```text
-Politics
-→ contributes Skill Definition
-
-EP-CHAR-CORE
-→ owns Character Skill State
-```
-
-禁止：
-
-```text
-Politics.characterPolitics = 90
-```
-
-## 6.3 Capability 不能强制政治结果
-
-即使：
-
-- 辩说顶尖；
-- 外交顶尖；
-- 政局判断顶尖；
-
-也不能：
-
-- 强迫 NPC 背叛；
+- 强迫 NPC 背叛其核心立场；
 - 强迫势力投降；
-- 强迫 Marriage；
-- 越过 Authority；
-- 创造不存在的资源；
-- 抹掉政治核心利益。
+- 强迫婚姻成立；
+- 越过权威制造合法效果；
+- 凭空创造不存在的资源；
+- 抹掉对方的核心利益。
 
-Capability 只影响：
+能力影响的是**真实可改变空间内的执行质量**：话说得更动人、条件谈得更漂亮、时机抓得更准——但对方的核心利益与自主性永远有效。
 
-> 真实可改变空间中的执行质量。
+# 7. 政治事实的构成
 
----
+以下是本包追踪的几类政治事实。它们是语义区分，帮助 GM 把政治世界想清楚，不是必须逐项填表的账本。
 
-# 7. Political State Model｜政治状态模型
+## 7.1 政治集团／政权
 
-## 7.1 Political Faction / Regime
+一个持续存在的政治主体：是否还在、公开身份是什么、领导结构如何、政治中心在哪、有哪些成员与附属、被哪些主体承认。集团不等于它名下全部军队、全部财政和成员的全部私人关系。
 
-表示一个持续政治主体：
+## 7.2 政治归属
 
-- 当前是否存在；
-- 公开身份；
-- 领导结构；
-- 政治中心；
-- 成员 / 附属结构；
-- 被哪些主体承认。
+人物或组织与政治主体之间的正式关系：出仕、为幕僚、为臣民、依附性的臣属关系、临时政治合作、独立、隐退……一个人物可以同时拥有多个不同层次的身份（既是朝廷名义上的官员，又实际为某军阀效力）。不要压扁成“某人属于某势力”一个标签。
 
-它不拥有：
+## 7.3 官职持有
 
-- 全部军队；
-- 全部财政；
-- 人物全部关系。
+人物当前正式持有的官职：是什么官、谁授予、何时生效、管辖范围、职责、是否有争议、哪些主体承认、当前是否仍然有效。官职是持续状态；“某年曾被任命”只是历史记录。
 
----
+## 7.4 权威与管辖
 
-## 7.2 Political Affiliation
+- **权威**回答：这个角色或主体有没有让某种政治效果正式成立的制度性权力来源？
+- **管辖**回答：这种权力在哪些对象、地域、组织范围内有效？
 
-表示 Character / Organization 与政治主体之间的正式政治关系。
+它们约束的是**正式效果**，不是玩家的尝试。无权者依然可以宣称任命、伪造诏令、冒名代表、私下下令、威胁、收买、政治表演——只是对应的合法效果不自动成立。详见第 9 节“开放尝试”。
 
-例如：
+## 7.5 政治承认
 
-- formal service；
-- retainer / staff；
-- subject；
-- vassal-like relation；
-- temporary political cooperation；
-- independent；
-- withdrawn。
+方向性的政治事实：某主体是否承认某个官职、政权、君主、继承人、领土主张、政治身份。承认可以是单向的、有条件的、局部的、暂时的，公开与私下也可以不同。**不存在全球唯一的“合法性分数”**——甲承认的，乙可以不承认，两份承认同时有效、各自真实。
 
-一个 Character 可以同时拥有多个不同层次身份。
+## 7.6 政治控制
 
-不能压成：
-
-> 一个 `factionId`。
-
----
-
-## 7.3 Office Holding
-
-记录 Character 当前正式持有的官职 / 政治职位。
-
-至少语义上回答：
-
-- Office 是什么；
-- 谁授予；
-- 何时生效；
-- jurisdiction；
--职责；
-- 是否有争议；
-- 当前哪些主体承认；
-- 当前是否仍有效。
-
-Office 是正式 State。
-
-Event 只记录：
-
-> 曾经任命过。
-
----
-
-## 7.4 Authority / Jurisdiction
-
-Authority 回答：
-
-> **当前角色 / 政治主体是否具有让某种政治效果正式成立的制度性权力来源。**
-
-Jurisdiction 回答：
-
-> **这种权力在哪些对象 / 地域 / 组织范围内有效。**
-
-它们不是：
-
-> 玩家输入许可。
-
-无权者仍可尝试：
-
-- 宣称任命；
-- 伪造诏令；
-- 冒名代表；
-- 私下命令；
-- 威胁；
-- 收买；
-- 政治表演。
-
-只是：
-
-> 对应“合法正式效果”不自动成立。
-
----
-
-## 7.5 Political Recognition
-
-方向性表达某政治主体是否承认：
-
-- Office；
-- Regime；
-- Ruler；
-- Successor；
-- Territory Claim；
-- Political Status。
-
-Recognition 可以：
-
-- 单向；
-- 条件性；
-- 局部；
-- 暂时；
-- 公开 / 私下不同。
-
-不建立全球唯一：
-
-> Legitimacy Score。
-
----
-
-## 7.6 Political Control
-
-表示某政治主体对 Region / Place 的：
-
-- 实际行政控制；
-- 名义主张；
-- 外部承认关系。
-
-必须区分：
+某政治主体对一片地区的实际控制状况。请严格区分五件事：
 
 ```text
-Claim
-!=
-Office jurisdiction
-!=
-Military Occupation
-!=
-Actual Political Control
-!=
-Recognition
+领土主张 ≠ 官职管辖 ≠ 军事占领 ≠ 实际行政控制 ≠ 外部承认
 ```
 
-War 可以产生：
+军队打下县城产生的是军事占领（战争机制的事）；是否随后建立行政接管、形成实际控制，由政治过程单独决定。地图上的颜色、名义上的归属、实际能征税派役的范围，完全可以是三回事。
 
-> Military Occupation。
+## 7.7 外交政治关系
 
-Politics 再决定：
+集团之间的持续关系：同盟、敌对、中立、臣属、宗主、相互承认、互不承认。不要求对称——甲视乙为宗主，乙可以视甲为附庸，也可以根本不承认这层关系。
 
-> 是否形成行政接管 / Political Control。
+## 7.8 继承
 
----
+记录：当前领导、已指定候选、公开候选、各方的政治背书、摄政安排、继承争议、继承解决。**指定继承人不等于自动继承成功**——继位要单独结算（见第 11.4 节）。
 
-## 7.7 Diplomatic Political Relation
+## 7.9 政治主张
 
-用于 Organization / Faction 之间持续关系：
-
-- alliance；
-- hostility；
-- neutral；
-- submission；
-- suzerainty；
-- mutual recognition；
-- non-recognition。
-
-不要求对称。
-
----
-
-## 7.8 Succession
-
-用于表达：
-
-- 当前领导；
-- 已指定候选；
-- 公开候选；
-- Political Endorsement；
-- Regency；
-- Succession dispute；
-- Succession resolution。
-
-指定继承人：
-
-> 不等于自动继承成功。
-
----
-
-## 7.9 Political Claim
-
-保存公开 / 正式提出的：
-
-- Office Claim；
-- Succession Claim；
-- Territorial Claim；
-- Regime Name；
-- Imperial / Royal Claim；
-- Orthodoxy Claim。
-
-Claim 是真实政治行为。
-
-但：
-
-> Claim != Recognition != Control。
-
----
-
-# 8. Core Gameplay Loops｜主要玩法闭环
-
-## 8.1 仕进 / 政治归属
+公开或正式提出的声索：官职主张、继承主张、领土主张、国号、帝号、王号、正统主张。主张是真实的政治行为，但：
 
 ```text
-接触政治主体
-↓
-投奔 / 征辟 / 推荐 /招揽
-↓
-Character-specific political choice
-↓
-接受 / 拒绝 / 试用 / 附条件
-↓
-Political Affiliation
-↓
-职责与后续政治 Event
+主张 ≠ 承认 ≠ 控制
 ```
 
-## 8.2 Office
+地方首领可以今日称帝——主张即刻成立；有没有人承认、实际控制是否随之扩大，是另外两笔账。
+
+# 8. 主要玩法循环
+
+以下五条循环是本包的主干体验，供 GM 组织政治玩法。
+
+## 8.1 仕进与政治归属
 
 ```text
-出现职务需求
-↓
-推荐 / 任命
-↓
-Authority / jurisdiction validation
-↓
-目标自主接受 / 拒绝
-↓
-Office Holding
-↓
-职责 / Authority change
+接触政治主体 → 投奔／征辟／推荐／招揽
+→ 当事人基于自身人格、处境与利益做出选择
+→ 接受／拒绝／试用／附条件
+→ 政治归属成立 → 带来职责与后续政治牵连
 ```
 
-## 8.3 Diplomacy
+## 8.2 任官
 
 ```text
-利益 / 威胁 / 争议
-↓
-Proposal
-↓
-authorized representation
-↓
-negotiation
-↓
-Political Agreement
-+
-World OS Commitment if explicit promise
-↓
-future fulfillment / violation
+出现职务需求 → 推荐／任命
+→ 权威与管辖检查
+→ 被任命者自主决定接受或拒绝
+→ 官职持有成立 → 职责与权威随之变化
 ```
 
-## 8.4 Succession
+## 8.3 外交
 
 ```text
-领导权真空 / 退位 /死亡 /失能
-↓
-读取既有 succession state
-↓
-政治支持 /反对 /候选
-↓
-control + recognition + office + war context
-↓
-Succession Resolution
-↓
-领导变化 / 摄政 / 分裂 / 未决
+利益／威胁／争议 → 提案
+→ 有授权的代表出面 → 谈判
+→ 政治协议成立（含明确承诺的，承诺单独追踪）
+→ 日后的履行或背弃带来政治后果
 ```
 
-## 8.5 Regime Transition
+## 8.4 继承
 
 ```text
-政治条件变化
-↓
-Claim / declaration
-↓
-internal establishment
-↓
-Recognition
-↓
-Political Control
-↓
-Regime State change
+领导权出现真空（退位／死亡／失能）
+→ 检视既有的继承安排与各派背书
+→ 结合实际控制、承认、官职与军事态势
+→ 继承解决：顺利继位／摄政／分裂／悬而未决
 ```
 
----
-
-# 9. Open Attempt｜开放尝试与政治效果
-
-本包继续冻结：
-
-> **身份和 Authority 约束正式政治效果，不删除玩家尝试。**
-
-例如普通县吏说：
-
-> “我任命你为荆州牧。”
-
-正确结果是：
+## 8.5 政权转化
 
 ```text
-Attempt happened
-↓
-Authority insufficient
-↓
-Legal Office Holding NOT created
-↓
-Possible Event:
-false order / political performance / fraud / provocation
-↓
-NPC / Politics / Relationship consequence
+政治条件成熟 → 提出主张／宣言
+→ 内部建制 → 争取承认
+→ 落实实际控制 → 政权形态改变
 ```
 
-而不是：
+# 9. 开放尝试：身份约束效果，不约束行动
 
-> 输入按钮灰掉。
+本包坚定遵守一条原则：**政治身份与权威约束正式政治效果，但不删除任何人的尝试。**
 
----
+例如一个普通县吏说：“我任命你为荆州牧。”正确的处理是：
 
-# 10. Political Actions｜高频结构化政治行为
+```text
+尝试真实发生了
+→ 权威不足
+→ 合法官职不成立
+→ 但这番话本身可能构成事件：
+   矫诏／政治表演／欺诈／挑衅
+→ 带来 NPC 反应、政治后果、关系变化
+```
 
-这些是机制化路径，不是玩家行为全集。
+而不是让这句话说不出口。伪造诏书、冒名代表、私下策反、假传任命、政治勒索——这些“不在菜单上”的行为恰恰是乱世政治的精髓，GM 应忠实理解它们，让它们在世界里产生符合逻辑的后果，同时不给它们不应得的合法效力。
 
-- 求见 / 建立政治接触；
-- 投奔 / 请求加入；
-- 招揽；
-- 举荐；
-- 正式任命；
-- 撤职；
-- 辞官；
-- 改变 Political Affiliation；
-- 提出联盟；
-- 提出臣属 / 接受册封；
+# 10. 常见政治行为
+
+高频结构化政治行为包括但不限于：
+
+- 求见、建立政治接触；
+- 投奔、请求加入；
+- 招揽、举荐；
+- 正式任命、撤职、辞官；
+- 改变政治归属；
+- 提出联盟、提出臣属、接受册封；
 - 宣布独立；
-- 承认 / 撤回承认；
-- 公开支持 / 反对政治候选；
+- 承认、撤回承认；
+- 公开支持或反对政治候选；
 - 指定继承候选；
 - 建立新政治集团；
-- 宣布政权 / 变更名号；
+- 宣布政权、变更名号；
 - 提出政治婚姻条件；
-- 签订 / 终止 Political Agreement；
-- 提出新的 Political Claim。
+- 签订、终止政治协议；
+- 提出新的政治主张。
 
-未预定义的：
+这份清单是常见路径，不是行为全集。玩家与 NPC 的其它政治举动照第 9 节处理。
 
-- 伪造诏书；
-- 冒名代表；
-- 私下策反；
-- 假传任命；
-- 政治勒索；
+# 11. 如何自然裁定
 
-仍由 Runtime 忠实理解并映射到正式状态 / Event。
+## 11.1 总的裁定思路
 
----
+面对一次政治尝试，GM 按下面的顺序掂量：
 
-# 11. Resolution Contract｜政治裁定链
+1. 当事人的身份与意愿（玩家和 NPC 都有自主权，谁也不被替别人决定）；
+2. 当前政治事实：权威、管辖、既有官职、承认关系；
+3. 当事人的人格与立场（人物卡是 NPC 政治选择的根本依据）；
+4. 相关时：私人关系、明确承诺、能力造诣、经济军事形势、身体状况；
+5. 条件清楚的地方直接得出确定结果；真正不确定的地方再引入偶然性。
 
-```text
-Political Attempt
-↓
-Player / NPC Agency Authorization
-↓
-Current Political State
-↓
-Authority / Jurisdiction
-↓
-Character Definition
-↓
-Relationship Context if relevant
-↓
-World OS Commitments if relevant
-↓
-EP-CHAR-CORE Capability if relevant
-↓
-Economy / War / Health context if relevant
-↓
-确定性条件
-↓
-必要时 Program Resolution / RNG
-↓
-Political Outcome Candidate
-↓
-Validation
-↓
-Atomic Commit
-↓
-Political State / Event / Commitment Handoff
-↓
-Player-safe Feedback
-```
+## 11.2 不需要掷骰的情形
 
-## 11.1 不滥用 Dice
+以下通常直接确定，不必诉诸随机：
 
-以下通常无需 Dice：
+- 有权者任命 + 对方明确接受 → 官职成立；
+- 无权者要求合法任命生效 → 不成立；
+- NPC 核心立场明确不可动摇 → 说服失败；
+- 已成立协议的确定性更新。
 
-- 有权任命 + 对方明确接受；
-- 无权者要求合法任命生效；
-- NPC 核心立场明确不可改变；
-- 已成立 Political Agreement 的确定性状态更新。
+只有当结果真正不确定、能力确有影响、多种结果都说得通、且风险事前就存在时，才值得引入偶然裁定。政治世界大部分时候是因果的，不是随机的。
 
-只有真正：
+## 11.3 招揽与任命
 
-- 不确定；
-- Capability 有意义；
-- 多种 Outcome 都合理；
-- 风险事前成立；
+招揽一个人才，要掂量：他的人格与志向、当前政治归属、私人关系、已有承诺、身家安全、家庭与社会牵绊、提供的职位、以及当前的站队风险。**识才之名和高位厚禄都不等于自动加入**——徐庶进曹营可以一言不发。
 
-才请求 Program Resolution。
+任命前做确定性检查：官职存在吗？任命者有权威吗？管辖对得上吗？对方愿意接受吗？与现任冲突吗？条件清楚就不需要偶然性。
 
----
+## 11.4 继承要单独结算
 
-# 12. Recruitment / Appointment / Diplomacy / Succession
+继承**不是**把旧领导的官职、控制、关系、军队、承认整体复制给继承人。每一项都要单独过一遍：
 
-## 12.1 Recruitment
+- 官职能否转移？谁有权除授？
+- 各派系承认新主吗？公开与私下一致吗？
+- 军队将领听命吗？
+- 实际控制维持得住吗？
 
-必须读取：
+原历史里孙权继业、曹丕嗣位都各有波折，游戏里只会更开放——继承正是分裂、政变、摄政、内战的天然发端。
 
-- Character Definition；
-- 当前 Political Affiliation；
-- Relationship；
-- Commitment；
-- 安全；
-- 家庭 / 社会条件；
-- 提供职位；
-- 当前政治风险。
+## 11.5 失败、成功与恶化的质感
 
-高 Skill：
+- **成功的质感**：一道合法任命成立，意味着承认网络、职责、管辖同步改变，周围人重新调整对这个人的姿态。政治成果是结构性的，不是一句“好感+10”；
+- **失败的质感**：越权行为不合法，但会留下痕迹——被识破的矫诏是罪证，冒失的政治表演是笑柄，站错的队会被记住。失败不是“什么都没发生”，而是“发生了对你不利的事”；
+- **推进的质感**：政治进展是台阶式的——先获得出仕，再获得实职，再获得承认，再获得管辖。每一步都有名字、有仪式、有见证者；
+- **恶化的质感**：承认被撤回、盟友背弃承诺、继承争议发酵、控制区只名义服从——政治恶化通常不是崩塌而是侵蚀，GM 应让它以“越来越多人不认账”的方式渗漏出来。
 
-> 不等于自动加入。
+# 12. 身体状态与履职
 
-## 12.2 Appointment
-
-先做确定性检查：
-
-1. Office 是否存在；
-2. 任命者有无 Authority；
-3. jurisdiction 是否匹配；
-4. 目标是否愿意接受；
-5. 当前是否有冲突 Holding。
-
-条件明确时：
-
-> 不需要 Dice。
-
-## 12.3 Diplomacy
-
-Outcome 必须读取：
-
-- 当前利益；
--共同威胁；
-- Political Relation；
-- Recognition；
-- 可兑现 Commitment；
-- Economy；
-- War；
-- Character leader decision。
-
-不能通过高骰：
-
-> 让根本不可能的无条件臣服成立。
-
-## 12.4 Succession
-
-继承不是把旧领导的：
-
-- Office；
-- Control；
-- Relationship；
-- Army；
-- Recognition；
-
-全部复制给继承人。
-
-它必须独立结算。
-
----
-
-# 13. Health Integration｜身体状态与履职
-
-Politics 不拥有：
-
-- 伤势；
-- 疾病；
-- 疲劳；
-- 意识；
-- HP。
-
-但可以读取 Health Core 的正式结果，例如：
+本包不拥有伤势、疾病、疲劳与意识状态（身体状态核心包负责），但要读取它们带来的履职事实：
 
 ```text
-Character:
-严重昏迷 / 无法履职
-↓
-Politics:
-Office duties require regency / temporary delegation / succession review
+君主重伤昏迷、无法视事
+→ 政治上：是否需要摄政？临时委代？启动继承检视？
 ```
 
-注意：
+身体机制只提供身体事实；是否摄政、是否罢免、是否继承、是否出现权力真空，由政治过程决定。
 
-> Health 只提供身体事实。
+# 13. 与其它包的关系
 
-是否：
+**唯一的前提是世界包**：没有“汉末三国：天下未定”的历史舞台、制度背景与人物，本包的政治机制无从谈起。除此之外，以下都是自然的协同，而非硬性要求——缺了任何一方，本包照常运转，只是对应维度的质感变薄：
 
-- 摄政；
-- 罢免；
-- 继承；
-- 权力真空；
+- **关系与恋爱核心**：私人关系为政治选择提供上下文（信任的人更可能被举荐），政治事件也会反过来塑造私人关系（背叛、庇护、联姻压力）。但关系数值永远不直接改写政治归属，政治立场也不直接改写私人感情；
+- **人物能力与技艺**：承载人物在法政、外交、辩说等领域的造诣。没有它，政治照常运转，只是“专业能力强弱”的体现更依赖叙事；
+- **身体状态核心**：提供履职可用性的身体事实（见第 12 节）；
+- **财赋与治理**：政治决定政策与权威，经济回答“能不能执行、收到多少、民生如何”。免税令可以合法成立，但行政网络执不执行、仓里有没有粮，是另一本账；
+- **军略与战争**：政治提供统帅权、战争目标、投降的政治条件；战争反馈占领、将领存亡、战役结果。军事占领不自动变成政治控制；
+- **历史参照与分歧**：重大政治事实（政权更替、继承、承认、控制、联盟变动）会成为历史对照的素材。历史包只读取、绝不回写，更无权要求政治“贴回原历史”。
 
-仍由 Politics + World rules 决定。
+反过来，本包也不会因为某个协同方缺席就自己另建一套对应机制：没有关系机制，政治照样运转，本包不会自己长出“信任值”。
 
----
+# 14. 信息边界：谁知道什么
 
-# 14. Cross-domain Handoffs
+## 14.1 通常可知的
 
-## 14.1 Politics ↔ Relationship
+依身份与信息来源：公开的官职、公开的政权、公开的联盟、公开的主张、已公布的继承人、已知的控制格局、以及玩家自己的政治身份。
 
-Politics → Relationship：
+## 14.2 默认隐藏的
 
-- public support；
-- betrayal；
-- marriage political pressure；
-- appointment；
-- dismissal；
-- protection；
-- political conflict；
+秘密的政治背书、秘密外交、私下的继承密谋、隐瞒的叛离意图、暗中的派系计划、私下的承认交易。
 
-可以形成 Source Event。
+## 14.3 世界事实 ≠ 玩家知识
 
-Relationship 决定：
+世界里可以真实存在“某派系正在秘密支持某继承人”这样的事实；玩家若没有合法信息来源，就不该知道。NPC 也一样：他们只按自己知道的信息做政治判断——误判、被蒙蔽、后知后觉，都是政治戏的好材料。
 
-> Character 如何解释这些 Event。
+# 15. 值得持久化的状态
 
-Relationship → Politics：
+以下政治事实一旦成立，就是游戏世界的持久真相，值得写入游戏工作区并跨会话延续：
 
-- Marriage Bond；
-- known interpersonal context；
+- 各政治集团／政权的状态；
+- 政治归属；
+- 官职持有；
+- 承认关系；
+- 政治控制格局；
+- 外交关系；
+- 政治协议；
+- 继承安排与争议；
+- 政治主张；
+- 与上述事实相关的明确承诺；
+- 玩家与各方分别知道什么。
 
-可成为政治输入。
+读档后这些事实原样恢复：不重新决定谁是皇帝，不因为现实历史（或 GM 新查的史料）覆盖旧存档。开局时，这些初始政治事实由世界包、历史基线与人物定义依照所选时间锚点建立；建立之后，它们就是游戏自己的现实，随游玩演化。
 
-不允许 Relationship 数值直接写：
+# 16. 它不拥有什么
 
-> Political Affiliation。
+明确不属于本包的：
 
----
+- 人物人格、价值观与长期目标（人物卡）；
+- 人物能力造诣（人物能力与技艺）；
+- 私人关系真相：信任、敬重、亲近、爱慕、关系记忆、婚姻本身（关系与恋爱核心）；
+- “谁明确答应了谁什么”的账本（游戏基础层）；
+- 私人财产、嫁资、土地转移（财赋与治理）；
+- 财政、粮食、人口、治理执行（财赋与治理）；
+- 军队编制、战役、军事占领（军略与战争）；
+- 伤势、疾病、治疗（身体状态核心）；
+- 历史参照与分歧（历史参照与分歧）；
+- 随机性与任何形式的最终裁定权——本包提供政治逻辑，结果在游戏世界里成立。
 
-## 14.2 Politics ↔ Economy
+# 17. 其它包如何充实它
 
-Politics 提供：
+- **财赋与治理**可以在势力政务的图景中补充财政、民生、工程的维度，让“治理”有血肉；
+- **军略与战争**让政治的武力后盾与战争后果真实可感；
+- **关系与恋爱核心**让政治人物有私人的爱与恨，使政治选择更立体；
+- **历史参照与分歧**给政治变动提供历史纵深的回响；
+- 未来的新包（如情报、宗教、士族网络）也可以围绕政治事实补充新维度。
 
-- Authority；
-- Political Control；
-- public policy；
-- tax / requisition decision；
-- Office / jurisdiction。
+这些充实都是锦上添花，不是隐藏的前提：任何一方缺席，本包依然完整可玩；各协同方也无需为了配合本包改变自己的工作方式。
 
-Economy 负责：
+# 18. 裁定参考：常见情形
 
-- 能不能执行；
-- 收到多少；
-- 地区受到什么长期经济影响。
-
-例如：
-
-```text
-Politics:
-免税命令合法成立
-
-↓
-Economy:
-行政网络是否执行
-↓
-实际收入 / 民生后果
-```
-
----
-
-## 14.3 Politics ↔ War
-
-Politics → War：
-
-- command authority；
-- affiliation；
-- alliance / hostility；
-- political war objective；
-- surrender political terms。
-
-War → Politics：
-
-- Military Occupation；
-- commander captured / killed；
-- Formation collapse；
-- campaign result；
-- military surrender。
-
-War 不自动写：
-
-> Political Control。
+1. **合法任命**：有权威、官职存在、对方明确接受 → 官职成立，无需偶然裁定；
+2. **越权任命**：县吏宣布任命州牧 → 尝试成立，合法官职不成立，可能构成矫诏或政治事件；
+3. **受邀任官**：NPC 邀请玩家做军师 → 邀请可以发生，玩家不自动接受，身份不变；
+4. **高辩说遇上核心利益**：对方核心立场明确冲突 → 能力不覆盖自主性；
+5. **政见不合的挚友**：私人关系极好但公开反对对方称帝 → 两套事实各自成立；
+6. **政治婚姻**：婚姻成立，但联盟只是候选，不自动成立；
+7. **含承诺的联盟**：三月运粮之约 → 协议归政治，承诺单独追踪，粮食结果问经济；
+8. **背弃承诺**：盟友未按期出兵 → 承诺记为背弃，政治层裁定同盟后果；
+9. **秘密继承支持**：私下背书真实存在，玩家无信息来源则不可见；
+10. **君主昏迷**：身体事实归身体机制，摄政与继承压力归政治；
+11. **军事占领 ≠ 政治控制**：占领县城后，行政接管要单独成立；
+12. **称帝无人承认**：主张成立，政权与承认分开，控制不自动扩大；
+13. **承认不对称**：甲承认乙为君，丙不承认 → 两条方向性承认并存；
+14. **技能归属**：辩说造诣记在人物能力上，政治层不另存一份；
+15. **主张与控制不符的地区**：名义、主张、实际控制可以三色并存；
+16. **世界已偏离原历史**：不按史实强制未来的政治走向；
+17. **读档**：联盟、官职、承认、知识全部回到存档时的状态；
+18. **重复操作**：同一次任命不因重复提交而成立两次；
+19. **伪造诏书**：不因“菜单上没有”而拒绝处理——伪造、欺骗与政治后果照常展开，权威不因此获得；
+20. **关系不直接改写政治**：私人信任再高，政治归属的改变仍要当事人自己做主。
 
 ---
 
-## 14.4 Politics → History
-
-Politics 输出：
-
-- Succession Change；
-- Regime Formation；
-- Recognition Change；
-- Political Control Change；
-- Major Alliance Change；
-- other high-impact Political Event。
-
-History：
-
-> 只重评估 Reference。
-
-不能要求 Politics：
-
-> 贴回现实历史。
-
----
-
-# 15. Information Boundary｜政治信息边界
-
-## 15.1 通常玩家可知
-
-依身份与来源：
-
-- 公开 Office；
-- 公开 Regime；
-- 公开 Alliance；
-- 公开 Claim；
-- 已公布继承人；
-- 已知 Political Control；
-- 玩家自己的政治身份。
-
-## 15.2 默认隐藏
-
-- secret political endorsement；
-- secret diplomacy；
-- private succession plot；
-- concealed defection intent；
-- hidden faction plan；
-- private recognition bargain。
-
-## 15.3 Political State != Player Knowledge
-
-Runtime 可以知道：
-
-> 某派系正在秘密支持某继承人。
-
-玩家若没有合法来源：
-
-> UI 不显示。
-
----
-
-# 16. Runtime-extensible UI｜G8 Surface Contract
-
-本包正式请求：
-
-> **拥有一个一级 Extension Surface：`势力 / 政务`**
-
-当前只是产品语义，不冻结 G9 Surface ID。
-
-## 16.1 推荐二级 View
-
-```text
-势力 / 政务
-├─ 概览
-├─ 势力
-├─ 官职
-├─ 人才
-├─ 外交
-├─ 继承
-└─ 政治主张
-```
-
-后续 `财赋与治理` 可向该 Surface contribute：
-
-```text
-财赋
-民生
-工程
-```
-
-Economy：
-
-> 不能重复 owns 同一一级 Surface。
-
-## 16.2 Core Surface Contributions
-
-同时可以向：
-
-### 人物
-
-贡献：
-
-- Office Badge；
-- Political Affiliation；
-- public Political Endorsement；
-- known Office history。
-
-### 地图
-
-贡献：
-
-- Political Control Overlay；
-- Claim Overlay；
-- disputed region。
-
-必须区分：
-
-> Control / Claim / Military Occupation。
-
-### 信息
-
-贡献：
-
-- public political event；
-- known diplomacy；
-- known succession information；
-- political rumor / knowledge。
-
-### 目标
-
-引用：
-
-- 玩家正式接受的政治 Task / Objective。
-
-Politics 不自己建立第二 Task Owner。
-
-## 16.3 Action Intent
-
-UI 中：
-
-- 任命；
-- 招揽；
-- 外交；
-- 支持候选；
-- 政权宣言；
-
-按钮只能生成：
-
-> Action Intent。
-
-UI 不直接修改 Political State。
-
-## 16.4 Host Authority
-
-资产描述：
-
-- View；
-- Section；
-- Card；
-- Map Overlay；
-- Action Intent。
-
-Host 决定：
-
-- Layout；
-- Responsive；
-- Accessibility；
-- Safe Component；
-- Player ordering。
-
----
-
-# 17. Initialization｜初始化
-
-T0 Bootstrap 可以从：
-
-- World Pack；
-- Historical Baseline；
-- Character Definition；
-- current time anchor；
-
-建立：
-
-- Political Faction；
-- Affiliation；
-- Office Holding；
-- Recognition；
-- Political Control；
-- Diplomatic Relation；
-- Succession；
-- Claim。
-
-这些进入：
-
-> Game Instance。
-
-不回写 Expansion Definition。
-
----
-
-# 18. Save / Restore
-
-必须恢复：
-
-- Faction State；
-- Affiliation；
-- Office Holding；
-- Recognition；
-- Political Control；
-- Diplomatic Relation；
-- Political Agreement；
-- Succession；
-- Claim；
-- Political Event boundary；
-- Player Knowledge；
-- linked World OS Commitments；
-- UI-independent authoritative state。
-
-Restore：
-
-- 不重新调用模型决定谁是皇帝；
-- 不因为现实历史更新覆盖旧 Save；
-- 不回滚玩家 Surface ordering preference。
-
----
-
-# 19. Standard Regression Scenarios｜20 个
-
-## T-POL-01｜合法任命
-
-有 Authority，Office 存在，对方明确接受。
-
-期望：
-
-- 无意义 Dice 不发生；
-- Office Holding 正式成立。
-
-## T-POL-02｜越权任命
-
-县吏宣布任命州牧。
-
-期望：
-
-- Attempt 成立；
-- 合法 Office 不成立；
-- 可产生政治 / 欺诈 Event。
-
-## T-POL-03｜玩家未接受任官
-
-NPC 要玩家当军师。
-
-期望：
-
-- Invitation 可以发生；
-- 玩家不自动接受；
-- Office / Affiliation 不变。
-
-## T-POL-04｜高辩说不能强制背叛
-
-目标核心利益明确冲突。
-
-期望：
-
-- Capability 不覆盖 Character autonomy。
-
-## T-POL-05｜政治支持与私人关系分离
-
-A 与 B 私人关系很好，但 A 公开反对 B 称帝。
-
-期望：
-
-- Relationship 不被 Politics 自动改成敌对；
-- Political Opposition 成立。
-
-## T-POL-06｜政治婚姻
-
-双方 Marriage 成立。
-
-期望：
-
-- Relationship Core owns Marriage；
-- Politics 可以建立 Alliance candidate；
-- Alliance 不自动成立。
-
-## T-POL-07｜联盟含明确承诺
-
-联盟协议约定三月内运粮。
-
-期望：
-
-- Alliance → Politics；
-- 运粮 Promise → World OS Commitment；
-- 财力 / 粮食 Outcome → Economy。
-
-## T-POL-08｜Commitment 违背
-
-盟友未按期出兵。
-
-期望：
-
-- Commitment 标记正式违背；
-- Politics 消费 Event 决定 Alliance 后果；
-- 不维护第二 Promise state。
-
-## T-POL-09｜秘密继承支持
-
-NPC 私下支持候选人。
-
-期望：
-
-- 世界状态可存在；
-- 玩家无合法来源时 UI 不显示。
-
-## T-POL-10｜Health 导致无法履职
-
-君主重伤昏迷。
-
-期望：
-
-- Health owns bodily truth；
-- Politics 可以处理摄政 / succession pressure；
-- 不复制昏迷状态。
-
-## T-POL-11｜军事占领 != 政治控制
-
-War 占领县城。
-
-期望：
-
-- Politics 读取 Military Occupation；
-- Political Control 需单独成立。
-
-## T-POL-12｜称帝但无人承认
-
-地方首领称帝。
-
-期望：
-
-- Claim 成立；
-- Regime / Recognition 分开；
-- 不自动控制更多地区。
-
-## T-POL-13｜Recognition 不对称
-
-A 承认 B 为合法君主；C 不承认。
-
-期望：
-
-- 两条方向性 Recognition 并存。
-
-## T-POL-14｜Character Skill contribution
-
-Politics 定义辩说 Skill。
-
-期望：
-
-- Character mastery 保存于 EP-CHAR-CORE；
-- Politics 不存第二份 skill level。
-
-## T-POL-15｜Economy contributor surface
-
-Economy 安装。
-
-期望：
-
-- 财赋 / 民生进入 `势力 / 政务`；
-- 不出现第二个同名一级 Surface Owner。
-
-## T-POL-16｜Map Overlay
-
-某地区 Claim 与 Control 不一致。
-
-期望：
-
-- UI 视觉区分；
-- 不把 Claim 画成实际控制。
-
-## T-POL-17｜T0 后历史污染
-
-当前世界政治格局已改变。
-
-期望：
-
-- 不按现实历史强制未来 Political Event。
-
-## T-POL-18｜Save / Restore
-
-联盟破裂后读回旧 Save。
-
-期望：
-
-- Alliance、Office、Recognition、Knowledge 全部回到旧状态。
-
-## T-POL-19｜重复任命请求
-
-客户端重试。
-
-期望：
-
-- 一个 Office change；
-- 一个 Event；
-- no duplicate commit。
-
-## T-POL-20｜未预定义政治尝试
-
-玩家伪造诏书。
-
-期望：
-
-- 不因 Action Registry 缺项拒绝；
-- 处理伪造 / 欺骗 /政治后果；
-- Authority 不被自动授予。
-
----
-
-# 20. Host Requirements
-
-| ID | Host 能力 | 必需性 | 缺失行为 |
-|---|---|---|---|
-| HR-POL-01 | Organization / Faction runtime | 必需 | 无法完整运行 |
-| HR-POL-02 | Multi-layer Political Affiliation | 必需 | 政治身份过度简化 |
-| HR-POL-03 | Office Definition / Holding | 必需 | 任官无法正式化 |
-| HR-POL-04 | Authority / Jurisdiction validation | 必需 | 正式政治效果失控 |
-| HR-POL-05 | Directional Recognition / Diplomacy | 必需 | 政治关系降级 |
-| HR-POL-06 | Political Control / Claim | 必需 | 地区政治无法表达 |
-| HR-POL-07 | NPC autonomous political choice | 必需 | NPC 退化为玩家工具 |
-| HR-POL-08 | EP-CHAR-CORE Capability Query | 推荐 | 专业政治能力降级 |
-| HR-POL-09 | Relationship safe read / event handoff | 推荐 | 人际政治上下文降级 |
-| HR-POL-10 | World OS Commitment integration | 必需 | Agreement 会复制 Promise |
-| HR-POL-11 | Health availability read | 推荐 | 履职状态粗粒度 |
-| HR-POL-12 | Economy / War safe integration | 推荐 | 跨域政治后果降级 |
-| HR-POL-13 | Event / Knowledge | 必需 | 历史与信息不可追踪 |
-| HR-POL-14 | Save / Restore | 必需 | 长期政治不可用 |
-| HR-POL-15 | Atomic Commit / idempotency | 必需 | 重复任命 / 半提交 |
-| HR-POL-16 | Extension Surface Ownership | 推荐 | 文本降级 |
-| HR-POL-17 | Map Overlay | 推荐 | 地缘政治只能文本 |
-
----
-
-# 21. Dependency / Integration Position
-
-## Required Semantic Provider
-
-- `汉末三国：天下未定 World Pack`；
-- World OS / Runtime。
-
-## Optional / Strong Integrations
-
-- `EP-CHAR-CORE`；
-- `EP-RELATIONSHIP-ROMANCE-CORE`；
-- `EP-HEALTH-CORE`；
-- `财赋与治理`；
-- `军略与战争`；
-- `历史参照与分歧`。
-
-本包不因为某一 Optional Integration 缺失就：
-
-> 建立第二套对应状态。
-
-例如没有 Relationship Core：
-
-- 政治仍可运行；
-- 但私人关系上下文降级；
-- Politics 不能自己创建 Trust / Love。
-
----
-
-# 22. Creator / asset-spec vNext Requirements
-
-未来协议需要能够表达：
-
-- Faction / Organization；
-- Political Affiliation；
-- Office Definition / Holding；
-- Authority / Jurisdiction；
-- Recognition；
-- Political Control；
-- Claim；
-- Diplomatic Relation；
-- Political Agreement；
-- Succession；
-- Political Skill Contribution；
-- World OS Commitment Handoff；
-- Relationship / Economy / War safe link；
-- Extension Surface Ownership；
-- Contributor View / Section；
-- Map Overlay；
-- Conflict detection。
-
-不能要求：
-
-- 任意 JS；
-- Politics 自建 NPC AI；
-- Politics 自建 Relationship Engine；
-- Politics 自建 Commitment Engine；
-- Creator 自己 Commit Game State。
-
----
-
-# 23. Migration From v0.1.3
-
-## Removed
-
-- 旧 `汉末三国：人物能力与技艺` dependency；
-- Politics 自己解释人物“政治 / 魅力”能力的降级路线；
-- 模糊的“政治支持 = 私人关系”空间；
-- Political Agreement 与 Commitment 混用风险；
-- Politics 对 Marriage Bond 的潜在 Ownership；
-- 旧 Survival Health Owner 引用。
-
-## Added / Rebound
-
-- EP-CHAR-CORE；
-- Politics Skill Contribution；
-- EP-RELATIONSHIP-ROMANCE-CORE；
-- World OS Commitment；
-- EP-HEALTH-CORE availability read；
-- G8 `势力 / 政务` Surface Ownership；
-- Economy Surface Contribution boundary。
-
-## Preserved
-
-- Faction；
-- Affiliation；
-- Office；
-- Authority；
-- Recognition；
-- Control；
-- Diplomacy；
-- Succession；
-- Claim；
-- Regime Transition；
-- Open Attempt；
-- NPC autonomy；
-- Knowledge boundary。
-
----
-
-# 24. Quality Gate
-
-| Gate | Result |
-|---|---|
-| Scope / Ownership | PASS |
-| Character Core Rebind | PASS |
-| Political Skill Contribution | PASS |
-| Relationship Boundary | PASS |
-| Marriage Boundary | PASS |
-| World OS Commitment Boundary | PASS |
-| Political Support Boundary | PASS |
-| Open Attempt | PASS |
-| NPC Autonomy | PASS |
-| Authority / Jurisdiction | PASS |
-| Recognition / Control separation | PASS |
-| Health read boundary | PASS |
-| Economy / War handoff | PASS |
-| Information boundary | PASS |
-| Program Authority | PASS |
-| Save / Restore | PASS |
-| G8 Surface Ownership | PASS |
-| Definition / Instance | PASS |
-| Creator Authorability | PASS / G9 pending |
-
----
-
-# 25. Current State
-
-```text
-汉末三国：政争与势力 v0.2.1
-
-Legacy v0.1.3 review            COMPLETE
-Character Capability migration  COMPLETE
-Relationship boundary           COMPLETE
-Commitment boundary             COMPLETE
-Political Skill contribution    COMPLETE
-G8 Surface ownership            COMPLETE
-Semantic Candidate              CURRENT
-G9 machine binding              PENDING
-Cross-asset final audit         PASS / PATCHED
-```
-
----
-
-# 26. Final Freeze
-
-> **Politics 拥有正式政治结构，不拥有人物私人感情。**
+> **政治拥有正式政治结构，不拥有私人感情。**
 >
-> **Political Support 是正式政治立场，不是 Relationship Trust / Attachment。**
+> **政治支持是正式立场，不是信任与亲近。**
 >
-> **Political Agreement 是制度关系；明确 Promise 进入 World OS Commitment。**
+> **政治协议是制度关系；明确承诺单独追踪。**
 >
-> **Marriage Bond 归 Relationship Core；Politics 只处理婚姻的政治条件与后果。**
+> **婚姻归关系机制，政治只管婚姻的政治条件与后果。**
 >
-> **人物政治能力全部进入 EP-CHAR-CORE；本包只贡献政治领域 Skill Definition。**
+> **权威与管辖约束正式效果，不删除任何人的尝试。**
 >
-> **Authority / Jurisdiction 约束正式效果，不删除玩家尝试。**
->
-> **本包拥有“势力 / 政务”一级 Extension Surface；后续财赋与治理向其贡献，不重复 owns。**
->
-> **Program 最终拥有政治 Outcome 与 Atomic Commit。**
-
-
----
-
-# v0.2.1 修订说明｜资产族版本引用闭环
-
-本次不修改 Politics 机制正文，只做跨资产引用收敛：
-
-1. World Pack 改绑 `汉末三国：天下未定 v0.2.3`；
-2. Economy 改绑 `财赋与治理 v0.2`；
-3. War 改绑 `军略与战争 v0.2`；
-4. History 改绑 `历史参照与分歧 v0.2`；
-5. Frontmatter 补登记 `身体状态核心 v0.1`，与正文 Health Integration 保持一致；
-6. 由此闭合 Economy / War / History 已预指向 `Politics v0.2.1` 的版本关系。
+> **主张、承认、管辖、占领、实际控制，是五笔不同的账。**
