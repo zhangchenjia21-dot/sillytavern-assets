@@ -10,10 +10,6 @@ status: audited-current
 version: 0.1.5
 asset_type: expansion-pack
 asset_family: 通用拓展包资产库
-blueprint: "[[通用拓展包资产库总蓝图_v1.0]]"
-reference_world_consumers:
-  - "[[埃瑟维亚_诸界余辉_World_Pack_v0.1.3]]"
-generic_reuse_target: true
 language: zh-CN
 tags:
   - 酒馆游戏
@@ -534,9 +530,17 @@ NPC 在玩家不在场时继续工作、学习、训练、承担职责，能力�
 
 ## 18. 相关资产
 
-- [[通用拓展包资产库总蓝图_v0.1]]
-- [[埃瑟维亚_诸界余辉_World_Pack_v0.1.3]]
 - [[战斗核心_Expansion_Pack_v0.1]]
 - [[身体状态核心_Expansion_Pack_v0.1]]
 - [[关系与恋爱核心_Expansion_Pack_v0.2]]
 - [[生存需求与环境_Expansion_Pack_v0.2]]
+
+---
+
+## Revision Notes
+
+v0.1.5（DSH-native 迁移）
+
+- 移除第二版 Runtime 专属结构与机器协议语言;
+- 改写为面向 GM 的纯资产文档;
+- 保留玩法机制与裁定参考深度。

@@ -12,9 +12,6 @@ status: audited-current
 version: 0.2
 asset_type: expansion-pack
 asset_family: 通用拓展包资产库
-blueprint: "[[通用拓展包资产库总蓝图_v1.0]]"
-reusability: cross-world
-generic_reuse_target: true
 supersedes:
   - "[[异世来客_穿越者系统_Expansion_Pack_v0.1.2]]"
 language: zh-CN
@@ -34,7 +31,6 @@ tags:
   - 通用拓展
   - 穿越
   - 系统流
-skill: tavern-asset v0.5.2
 ---
 
 # 穿越与系统｜Expansion Pack v0.2
@@ -476,3 +472,13 @@ skill: tavern-asset v0.5.2
 24. **接受系统任务后**：它成为玩家当前真实目标之一；完成与否以世界实际发生为准；拒绝无隐藏后果。
 25. **系统知道某秘密**：持有者知道（标系统来源）；任何 NPC 不因此知道。
 26. **读档回到升级系统之前**：当时的系统状态（货币、任务、空间、模块）随之恢复，后续升级不污染旧档。
+
+---
+
+## Revision Notes
+
+v0.2（DSH-native 迁移）
+
+- 移除第二版 Runtime 专属结构与机器协议语言;
+- 改写为面向 GM 的纯资产文档;
+- 保留玩法机制与裁定参考深度。

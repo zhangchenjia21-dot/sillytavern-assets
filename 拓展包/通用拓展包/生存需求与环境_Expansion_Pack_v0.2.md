@@ -12,8 +12,6 @@ status: audited-current
 version: 0.2
 asset_type: expansion-pack
 asset_family: 通用拓展包资产库
-blueprint: "[[通用拓展包资产库总蓝图_v1.0]]"
-reusability: cross-world
 language: zh-CN
 tags:
   - ExpansionPack
@@ -471,3 +469,13 @@ GM 不得因为"这是坏选择"而禁止输入。坏选择的代价由缺口、
 - **任何包都可以充实本包**：新的暴露类型、世界特有的生存技艺、特殊的防护手段，都可以在各自包中以自然语言补充，与本文规则并行生效——它们是丰富而非前置，缺少它们时本包照常运转。
 
 本包不设定强制前置拓展；上列关系都是协作，不是启用条件。
+
+---
+
+## Revision Notes
+
+v0.2（DSH-native 迁移）
+
+- 移除第二版 Runtime 专属结构与机器协议语言;
+- 改写为面向 GM 的纯资产文档;
+- 保留玩法机制与裁定参考深度。
