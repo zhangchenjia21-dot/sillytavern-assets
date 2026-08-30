@@ -22,10 +22,10 @@
 → zhangchenjia21-dot/Vibe-Coding/main/sillytavern/
 
 资产创作与维护 Skill
-→ zhangchenjia21-dot/Skill/main/skill/gpt/tavern-asset/SKILL.md
+→ zhangchenjia21-dot/Vibe-Coding/main/skill/gpt/tavern-asset/SKILL.md
 
 正式 Agent 指令
-→ zhangchenjia21-dot/Skill/main/skill/gpt/agent-task-packet/SKILL.md
+→ zhangchenjia21-dot/Vibe-Coding/main/skill/gpt/agent-task-packet/SKILL.md
 ```
 
 ## 2. Canonical Ownership
@@ -53,7 +53,7 @@
 
 1. 获取 `main` 当前 HEAD；
 2. 读取本文件与目标目录最近的 `AGENTS.md`；
-3. 读取相关 Skill current；
+3. 读取 `Vibe-Coding/skill/` 下相关 Skill current；
 4. 定位资产族或通用资产库 current index；
 5. 再读取被引用的 canonical assets；
 6. 检查 `status / version / supersedes / archive`。
@@ -135,7 +135,7 @@ shared domain survey
 
 ## 9. 正式 Agent 指令
 
-GPT 为 Codex、Grok 或其它 Agent 生成资产任务时，使用 `agent-task-packet`，至少说明：
+GPT 为 Codex、Grok 或其它 Agent 生成资产任务时，使用 `Vibe-Coding/skill/gpt/agent-task-packet`，至少说明：
 
 - repo / branch / base HEAD；
 - current Skill 与资产事实源；
